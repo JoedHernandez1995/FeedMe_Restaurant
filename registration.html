@@ -26,7 +26,7 @@
 
   <nav>
     <div class="nav-wrapper red darken-4">
-      <img src="images/drawing.png" class="nav_bar_logo brand-logo center " />
+      <img src="images/drawing.png" class="nav_bar_logo brand-logo center" />
     </div>
   </nav>
 
@@ -36,34 +36,48 @@
 <div class="row">
   <div class="col s12 m6 push-m3">
     <div class="card-panel white red-text text-darken-4">
-      <h3 class="center">Iniciar Sesion</h3>
+      <h3 class="center">Registrarse</h3>
 
-      <form id="restaurant_submitLogin">
+      <form id="submitRegistration" method="post">
         <div class="row">
           <div class="input-field col s12 m9 push-m1">
             <i class="material-icons prefix">account_circle</i>
-            <input name="restaurant_loginID" id="restaurant_loginID" type="text" class="validate">
-            <label for="restaurant_loginID">ID de Restaurante</label>
+            <input name="id_usuario" id="restaurant_registrationID" type="text" class="validate">
+            <label for="restaurant_registrationID">ID de Restaurante</label>
           </div>
         </div>
         <div class="row">
           <div class="input-field col s12 m9 push-m1">
             <i class="material-icons prefix">lock</i>
-            <input name="restaurant_loginPassword" id="restaurant_loginPassword" type="password" class="validate">
-            <label for="restaurant_loginPassword">Contrasena</label>
+            <input name="contrasena" id="restaurant_registrationPassword" type="password" class="validate">
+            <label for="restaurant_registrationPassword">Contrasena</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12 m9 push-m1">
+            <i class="material-icons prefix">lock</i>
+            <input name="contrasena" id="restaurant_confirmRegistrationPassword" type="password" class="validate">
+            <label for="restaurant_confirmRegistrationPassword">Confirmar Contrasena</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12 m9 push-m1">
+            <i class="material-icons prefix">account_circle</i>
+            <input name="nom_restaurante" id="restaurant_registrationName" type="text" class="validate">
+            <label for="restaurant_registrationName">Nombre de Restaurante</label>
           </div>
         </div>
 
         <div class="row">
           <div class="col s12 m12 center">
-            <button class="btn waves-effect waves-light red darken-4" type="submit" name="submitLoginForm">Iniciar Sesion
+            <button class="btn waves-effect waves-light red darken-4" type="submit" id="submitRegistrationForm" name="submitRegistrationForm">Registrarse
               <i class="material-icons right">send</i>
             </button>
           </div>
         </div>
       </form>
       <div class="row">
-        <h6 class="center"><a href="registration.html">Crear Una Cuenta</a></h6>
+        <h6 class="center"><a href="home.html">Iniciar Sesion</a></h6>
       </div>
     </div>
   </div>
