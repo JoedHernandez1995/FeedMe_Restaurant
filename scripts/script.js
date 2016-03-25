@@ -1,3 +1,5 @@
+
+/*Convert Javascript Array Objects to JSON Format*/
 function toJSON(formArray){
   var obj = {};
   $.each(formArray, function(i, pair){
@@ -16,7 +18,7 @@ $(document).ready(function() {
     console.log( "ready!" ); //Test jquery is ready
 
     /*Submit Registration Form*/
-    $("#submitRegistration").submit(function(event){
+    $("#registrationForm").submit(function(event){
       /*Get data from password fields and assign values to variables*/
       var registrationPassword = $("#restaurant_registrationPassword").val();
       var confirmRegistrationPassword = $("#restaurant_confirmRegistrationPassword").val();
@@ -32,7 +34,7 @@ $(document).ready(function() {
           event.preventDefault(); //Prevent Form Submission
         }else{
           /*Sumbit Form*/
-          var registrationFormArray = $("#submitRegistration").serializeArray(); //Serialize all the data in the form
+          var registrationFormArray = $("#registrationForm").serializeArray(); //Serialize all the data in the form
           var registrationJSONData = toJSON(registrationFormArray); //Convert form data to JSON formData
           $.ajax({
             type: "POST",
@@ -50,7 +52,27 @@ $(document).ready(function() {
           event.preventDefault();
         }
       }
-    }); //End Registration Form Submit 
+    }); //End Registration Form Submit
+
+    /*Submit Login Form*/
+    $("#loginForm").submit(function(event){
+      var loginFormArray = $("#loginForm").serializeArray();
+      var loginJSONData = toJSON(loginFormArray);
+      $.ajax({
+        type: "POST",
+        url: "http://feedmeserver.herokuapp.com/loginRestaurante",
+        data: loginJSONData,
+        contentType: "application/json",
+        dataType: 'json'
+      })
+      .done(function(data, textStatus, jqXHR){
+        console.log("Ajax completed: " + data);
+      })
+      .fail(function(jqXHR, textStatus, errorThrown){
+        console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+      });
+      event.preventDefault();
+    });
 
     /*Hacer la accion del select al hacer un cambio en el status de la orden*/
     /*
