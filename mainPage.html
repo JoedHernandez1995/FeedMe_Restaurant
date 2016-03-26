@@ -4,12 +4,12 @@
   <!--Import jQuery before materialize.js-->
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="js/materialize.min.js"></script>
-
+  <!--Import AngularJS -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
   <!--Import Google Icon Font-->
   <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!--Import materialize.css-->
   <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
-
   <!-- Compiled and minified CSS -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
   <!-- Compiled and minified JavaScript -->
@@ -23,6 +23,46 @@
 </head>
 
 <body background="./images/background.png">
-  
+
+  <nav>
+    <div class="nav-wrapper red darken-4">
+      <img src="./images/Drawing.png" class="nav_bar_logo_left brand-logo" />
+      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li class="active"><a href="mainPage.html">Ordenes</a></li>
+        <!-- Dropdown Trigger -->
+        <li><a href="#!">Ver Menu</a></li>
+        <li><a href="#!">Agregar Comida</a></li>
+        <li><a href="#!">Modificar Comida</a></li>
+        <li><a href="#!">Eliminar Comida</a></li>
+        <li><a href="#!">Cerrar Sesion</a></li>
+      </ul>
+      <ul class="side-nav" id="mobile-demo">
+        <li class="active"><a class="red-text text-darken-4" href="sass.html">Ordenes</a></li>
+        <li><a class="red-text text-darken-4" href="#!">Ver Menu</a></li>
+        <li><a class="red-text text-darken-4" href="#!">Agregar Comida</a></li>
+        <li><a class="red-text text-darken-4" href="#!">Modificar Comida</a></li>
+        <li><a class="red-text text-darken-4" href="#!">Eliminar Comida</a></li>
+        <li><a class="red-text text-darken-4" href="#!">Cerrar Sesion</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="row">
+    <table id="ordersTable">
+      <thead>
+        <tr>
+          <th data-field="id">Nmbre</th>
+          <th data-field="name">Precio</th>
+          <th data-field="price">ID</th>
+          <th data-field="price">Tiempo</th>
+          <th data-field="price">Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+
 </body>
 </html>

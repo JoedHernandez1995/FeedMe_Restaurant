@@ -17,6 +17,29 @@ function toJSON(formArray){
 $(document).ready(function() {
     console.log( "ready!" ); //Test jquery is ready
 
+    /*Load Orders from Server*/
+    $.ajax({
+      url: 'http://feedmeserver.herokuapp.com/comidas_cliente',
+      type: 'GET',
+      cache: false,
+      dataType: "json",
+      success: function(ordersData) {
+        $.each(ordersData, function(key, value){
+          $("#ordersTable > tbody").append("<tr><td>"+
+            value.nombre+"</td><td>"+
+            value.precio+"</td><td>"+
+            value.id_orden+"</td><td>"+
+            value.tiempo+"</td><td>"+
+            value.estado+"</td></tr>"
+          );
+        });
+      },
+      error: function(e) {
+        //called when there is an error
+        //console.log(e.message);
+      }
+    });
+
     /*Submit Registration Form*/
     $("#registrationForm").submit(function(event){
       /*Get data from password fields and assign values to variables*/
@@ -83,20 +106,7 @@ $(document).ready(function() {
 
     /*Materialize code*/
 
-    $('.button-collapse').sideNav({
-      menuWidth: 300, // Default is 240
-      edge: 'right', // Choose the horizontal origin
-      closeOnClick: true // Closes side-nav on <a> clicks, useful for Angular/Meteor
-      }
-    );
-
     $('select').material_select();
-    // Initialize collapse button
+    $(".dropdown-button").dropdown();
     $(".button-collapse").sideNav();
-    // Initialize collapsible (uncomment the line below if you use the dropdown variation)
-    //$('.collapsible').collapsible();
-    // Show sideNav
-    $('.button-collapse').sideNav('show');
-    // Hide sideNav
-    $('.button-collapse').sideNav('hide');
 });
