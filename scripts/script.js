@@ -56,8 +56,8 @@ $(document).ready(function() {
 
     /*Submit Login Form*/
     $("#loginForm").submit(function(event){
-      var loginFormArray = $("#loginForm").serializeArray();
-      var loginJSONData = toJSON(loginFormArray);
+      var loginFormArray = $("#loginForm").serializeArray();//Serialize all the data in the form
+      var loginJSONData = toJSON(loginFormArray);//Convert form data to JSON formData
       $.ajax({
         type: "POST",
         url: "http://feedmeserver.herokuapp.com/loginRestaurante",
@@ -72,7 +72,7 @@ $(document).ready(function() {
         console.log("Ajax problem: " + textStatus + ". " + errorThrown);
       });
       event.preventDefault();
-    });
+    });//End Login Form Submit
 
     /*Hacer la accion del select al hacer un cambio en el status de la orden*/
     /*
