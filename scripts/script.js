@@ -14,19 +14,87 @@ function toJSON(formArray){
   return JSON.stringify(obj);
 }
 
+/*Send AJAX Request to server to update order status*/
+function updateOrderStatus(orderId){
+  var orderStatus = $("#orderStatus_"+orderId+" option:selected").text();
+  var objectData = new Object();
+  objectData.id_orden = orderId;
+  var JSONOrderID = JSON.stringify(objectData); //JSON Data to send to Server
+
+  switch(orderStatus){
+    case 'N':
+      break;
+      case 'D':
+        $.ajax({
+          type: "POST",
+          url: "http://feedmeserver.herokuapp.com/ordenDenegada",
+          data: JSONOrderID,
+          contentType: "application/json",
+          dataType: 'json'
+        })
+        .done(function(data, textStatus, jqXHR){
+          console.log("Ajax completed: " + data);
+        })
+        .fail(function(jqXHR, textStatus, errorThrown){
+          console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+        });
+      break;
+    case 'A':
+      $.ajax({
+        type: "POST",
+        url: "http://feedmeserver.herokuapp.com/ordenAceptada",
+        data: JSONOrderID,
+        contentType: "application/json",
+        dataType: 'json'
+      })
+      .done(function(data, textStatus, jqXHR){
+        console.log("Ajax completed: " + data);
+      })
+      .fail(function(jqXHR, textStatus, errorThrown){
+        console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+      });
+      break;
+    case 'L':
+      $.ajax({
+        type: "POST",
+        url: "http://feedmeserver.herokuapp.com/ordenLista",
+        data: JSONOrderID,
+        contentType: "application/json",
+        dataType: 'json'
+      })
+      .done(function(data, textStatus, jqXHR){
+        console.log("Ajax completed: " + data);
+      })
+      .fail(function(jqXHR, textStatus, errorThrown){
+        console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+      });
+      break;
+    case 'E':
+      $.ajax({
+        type: "POST",
+        url: "http://feedmeserver.herokuapp.com/ordenEntregada",
+        data: JSONOrderID,
+        contentType: "application/json",
+        dataType: 'json'
+      })
+      .done(function(data, textStatus, jqXHR){
+        console.log("Ajax completed: " + data);
+      })
+      .fail(function(jqXHR, textStatus, errorThrown){
+        console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+      });
+      break;
+    case 'C':
+      break;
+    default:
+      alert("Ha ocurrido un Error");
+  }
+}
+
 $(document).ready(function() {
     console.log( "ready!" ); //Test jquery is ready
 
-    var comboBox = '<div class="input-field col s12">';
-        comboBox += '<select class="orderStatus">';
-        comboBox += '<option value="" disabled selected>Estado de la Orden</option>';
-        comboBox += '<option value="1">Aceptada</option>';
-        comboBox += '<option value="2">Pendiente</option>';
-        comboBox += '<option value="3">Cancelada</option>';
-        comboBox += "</select>";
-        comboBox += "<label>Estado de la Orden</label>";
-        comboBox += "</div>";
-
+    var comboBox;
     var editOrder = [];
 
     /*Load Orders from Server*/
@@ -37,7 +105,20 @@ $(document).ready(function() {
       dataType: "json",
       success: function(ordersData) {
         $.each(ordersData, function(key, value){
-          $("#ordersTable > tbody").append("<tr><td>"+
+          comboBox = '<div class="input-field col s12">';
+          comboBox += "<select id=\"orderStatus_"+value.id_orden+"\" onchange=\"updateOrderStatus("+value.id_orden+")\">";
+          comboBox += '<option value="" disabled selected>Estado de la Orden</option>';
+          comboBox += '<option value="1">N</option>';
+          comboBox += '<option value="2">A</option>';
+          comboBox += '<option value="3">D</option>';
+          comboBox += '<option value="3">L</option>';
+          comboBox += '<option value="3">E</option>';
+          comboBox += '<option value="3">C</option>';
+          comboBox += "</select>";
+          comboBox += "<label>Estado de la Orden</label>";
+          comboBox += "</div>";
+          $("#ordersTable > tbody").append(
+            "<tr><td>"+
             value.nombre+"</td><td>"+
             value.precio+"</td><td>"+
             value.id_orden+"</td><td>"+
