@@ -17,6 +17,18 @@ function toJSON(formArray){
 $(document).ready(function() {
     console.log( "ready!" ); //Test jquery is ready
 
+    var comboBox = '<div class="input-field col s12">';
+        comboBox += '<select class="orderStatus">';
+        comboBox += '<option value="" disabled selected>Estado de la Orden</option>';
+        comboBox += '<option value="1">Aceptada</option>';
+        comboBox += '<option value="2">Pendiente</option>';
+        comboBox += '<option value="3">Cancelada</option>';
+        comboBox += "</select>";
+        comboBox += "<label>Estado de la Orden</label>";
+        comboBox += "</div>";
+
+    var editOrder = [];
+
     /*Load Orders from Server*/
     $.ajax({
       url: 'http://feedmeserver.herokuapp.com/comidas_cliente',
@@ -30,8 +42,9 @@ $(document).ready(function() {
             value.precio+"</td><td>"+
             value.id_orden+"</td><td>"+
             value.tiempo+"</td><td>"+
-            value.estado+"</td></tr>"
+            comboBox+"</td></tr>"
           );
+          $('select').material_select();
         });
       },
       error: function(e) {
