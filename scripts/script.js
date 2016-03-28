@@ -228,6 +228,36 @@ $(document).ready(function() {
       event.preventDefault();
     });//End Login Form Submit
 
+    /*Submit MenuItem Form*/
+    $("#foodItemForm").submit(function(event){
+      var menuItemFormJSONdata = new Object();
+      var menuItemCategory = $("#menuItem_category").val();
+
+      menuItemFormJSONdata.name = $("#menuItem_name").val();
+      menuItemFormJSONdata.price = $("#menuItem_price").val();
+      menuItemFormJSONdata.descript = $("#menuItem_description").val();
+      menuItemFormJSONdata.category = $("#menuItem_category").val();
+      menuItemFormJSONdata.foto = $("#menuTime_picture").val();
+
+      alert(JSON.stringify(menuItemFormJSONdata));
+      $.ajax({
+        type: "POST",
+        url: "http://feedmeserver.herokuapp.com/comida_create",
+        data: JSON.stringify(menuItemFormJSONdata),
+        contentType: "application/json",
+        dataType: 'json'
+      })
+      .done(function(data, textStatus, jqXHR){
+        console.log("Ajax completed: " + data);
+      })
+      .fail(function(jqXHR, textStatus, errorThrown){
+        console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+      });
+      event.preventDefault();
+
+
+    });
+
     /*Hacer la accion del select al hacer un cambio en el status de la orden*/
     /*
     $("#orderStatus").change(function(){
