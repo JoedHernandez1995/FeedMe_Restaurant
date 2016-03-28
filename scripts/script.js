@@ -94,8 +94,8 @@ function updateOrderStatus(orderId){
 $(document).ready(function() {
     console.log( "ready!" ); //Test jquery is ready
 
-    var comboBox;
-    var editOrder = [];
+    var comboBoxOrderStatus; //ComboBox used to change order status
+    var cardMenuItem;
 
     /*Load Orders from Server*/
     $.ajax({
@@ -105,25 +105,25 @@ $(document).ready(function() {
       dataType: "json",
       success: function(ordersData) {
         $.each(ordersData, function(key, value){
-          comboBox = '<div class="input-field col s12">';
-          comboBox += "<select id=\"orderStatus_"+value.id_orden+"\" onchange=\"updateOrderStatus("+value.id_orden+")\">";
-          comboBox += '<option value="" disabled selected>Estado de la Orden</option>';
-          comboBox += '<option value="1">N</option>';
-          comboBox += '<option value="2">A</option>';
-          comboBox += '<option value="3">D</option>';
-          comboBox += '<option value="3">L</option>';
-          comboBox += '<option value="3">E</option>';
-          comboBox += '<option value="3">C</option>';
-          comboBox += "</select>";
-          comboBox += "<label>Estado de la Orden</label>";
-          comboBox += "</div>";
+          comboBoxOrderStatus = '<div class="input-field col s12">';
+          comboBoxOrderStatus += "<select id=\"orderStatus_"+value.id_orden+"\" onchange=\"updateOrderStatus("+value.id_orden+")\">";
+          comboBoxOrderStatus += '<option value="" disabled selected>Estado de la Orden</option>';
+          comboBoxOrderStatus += '<option value="1">N</option>';
+          comboBoxOrderStatus += '<option value="2">A</option>';
+          comboBoxOrderStatus += '<option value="3">D</option>';
+          comboBoxOrderStatus += '<option value="3">L</option>';
+          comboBoxOrderStatus += '<option value="3">E</option>';
+          comboBoxOrderStatus += '<option value="3">C</option>';
+          comboBoxOrderStatus += "</select>";
+          comboBoxOrderStatus += "<label>Estado de la Orden</label>";
+          comboBoxOrderStatus += "</div>";
           $("#ordersTable > tbody").append(
             "<tr><td>"+
             value.nombre+"</td><td>"+
             value.precio+"</td><td>"+
             value.id_orden+"</td><td>"+
             value.tiempo+"</td><td>"+
-            comboBox+"</td></tr>"
+            comboBoxOrderStatus+"</td></tr>"
           );
           $('select').material_select();
         });
@@ -133,6 +133,43 @@ $(document).ready(function() {
         //console.log(e.message);
       }
     });
+
+    /*Load Foods from Server*/
+    $.ajax({
+      url: 'http://feedmeserver.herokuapp.com/comidas',
+      type: 'GET',
+      cache: false,
+      dataType: "json",
+      success: function(menuItem) {
+        $.each(menuItem, function(key, value){
+          cardMenuItem = '<div class="card small col s6 m3">';
+          cardMenuItem += '<div class="card-image waves-effect waves-block waves-light">';
+          cardMenuItem += "<img class=\"activator\" src=\""+value.foto+"\">";
+          cardMenuItem += "</div>";
+          cardMenuItem += '<div class="card-content">';
+          cardMenuItem += "<span class=\"card-title activator grey-text text-darken-4\">"+value.nombre+"<i class=\"material-icons right\">more_vert</i></span>";
+          cardMenuItem += "<p>Precio: "+value.precio+"</p>";
+          cardMenuItem += "</div>";
+          cardMenuItem += '<div class="card-reveal">';
+          cardMenuItem += "<span class=\"card-title grey-text text-darken-4\">ID Comida: "+value.id_comida+"<i class=\"material-icons right\">close</i></span>"
+          cardMenuItem += "<p>"+value.descripcion+"</p>"
+          cardMenuItem += "<ul>";
+          cardMenuItem += "<li>Categoria: "+value.categoria+" </li>";
+          cardMenuItem += "<li>Veces Ordenada: "+value.veces_ordenada+" </li>";
+          cardMenuItem += "<li>ID Restaurante: "+value.id_restaurante+" </li>";
+          cardMenuItem += "<li>Nombre Restaurante: "+value.nom_restaurante+" </li>";
+          cardMenuItem += "</ul>";
+          cardMenuItem += "</div>";
+          cardMenuItem += "</div>";
+          $("#indexComidas").append(cardMenuItem);
+        });
+      },
+      error: function(e) {
+        //called when there is an error
+        //console.log(e.message);
+      }
+    });
+
 
     /*Submit Registration Form*/
     $("#registrationForm").submit(function(event){
