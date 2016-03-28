@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--Import jQuery before materialize.js-->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="js/materialize.min.js"></script>
+  <!--Import AngularJS -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <!--Import Google Icon Font-->
+  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--Import materialize.css-->
+  <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+  <!--Import custom javascript-->
+  <script type="text/javascript" src="scripts/script.js"></script>
+  <!--Import custom styles-->
+  <link type="text/css" rel="stylesheet" href="styles/styles.css"/>
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+
+<body background="./images/background.png">
+
+  <nav>
+    <div class="nav-wrapper red darken-4">
+      <img src="./images/Drawing.png" class="nav_bar_logo_left brand-logo" />
+      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="mainPage.html">Ordenes</a></li>
+        <li><a href="comidasIndex.html">Ver Menu</a></li>
+        <li class="active"><a href="agregarComida.html">Agregar Comida</a></li>
+        <li><a href="#!">Modificar Comida</a></li>
+        <li><a href="#!">Eliminar Comida</a></li>
+        <li><a href="#!">Cerrar Sesion</a></li>
+      </ul>
+      <ul class="side-nav" id="mobile-demo">
+        <li><a class="red-text text-darken-4" href="mainPage.html">Ordenes</a></li>
+        <li><a class="red-text text-darken-4" href="comidasIndex.html">Ver Menu</a></li>
+        <li class="active"><a class="red-text text-darken-4" href="agregarComida.html">Agregar Comida</a></li>
+        <li><a class="red-text text-darken-4" href="#!">Modificar Comida</a></li>
+        <li><a class="red-text text-darken-4" href="#!">Eliminar Comida</a></li>
+        <li><a class="red-text text-darken-4" href="#!">Cerrar Sesion</a></li>
+      </ul>
+    </div>
+  </nav>
+
+</br>
+</br>
+  <div class="row">
+  <div class="col s12 m6 push-m3">
+    <div class="card-panel white">
+      <h4 class="red-text text-darken-4 center">Ingresar Nueva Comida</h4>
+
+      <form id="foodItemForm" method="post">
+        <div class="row">
+          <div class="input-field col s12 m9 push-m1">
+            <i class="material-icons prefix">subject</i>
+            <input name="name" id="menuItem_name" type="text" class="validate">
+            <label for="menuItem_name">Nombre</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12 m9 push-m1">
+            <i class="material-icons prefix">mode_edit</i>
+            <textarea name="descript" id="menuItem_description" class="materialize-textarea"></textarea>
+            <label for="menuItem_description">Descripcion</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s5 m4 push-m2 push-s1">
+            <select id="menuItem_category">
+              <option value="D">Desayuno</option>
+              <option value="A">Almuerzo</option>
+              <option value="C">Cena</option>
+              <option value="S">Snack</option>
+            </select>
+            <label>Categoria</label>
+          </div>
+          <div class="input-field col s6 m4 push-m2 push-s1">
+            <input name="price" id="menuItem_price" type="text" class="validate">
+            <label for="menuItem_price">Precio</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="file-field input-field col s12 m9 push-m1">
+            <div class="btn red darken-4">
+              <span>Foto</span>
+              <input type="file">
+            </div>
+            <div class="file-path-wrapper">
+              <input name="foto" id="menuTime_picture" class="file-path validate" type="text">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12 m12 center">
+            <button class="btn waves-effect waves-light red darken-4" type="submit" id="submitFoodItemForm" name="submitFoodItemForm">Ingresar Comida
+              <i class="material-icons right">send</i>
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
