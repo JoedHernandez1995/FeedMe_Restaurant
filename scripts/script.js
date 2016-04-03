@@ -1,3 +1,4 @@
+var currentUserID;
 
 /*Convert Javascript Array Objects to JSON Format*/
 function toJSON(formArray){
@@ -93,10 +94,9 @@ function updateOrderStatus(orderId){
 
 $(document).ready(function() {
     console.log( "ready!" ); //Test jquery is ready
-
     var comboBoxOrderStatus; //ComboBox used to change order status
     var cardMenuItem;
-
+    var orderIdCompare = 0;
     /*Load Orders from Server*/
     $.ajax({
       url: 'http://feedmeserver.herokuapp.com/comidas_cliente',
@@ -107,13 +107,54 @@ $(document).ready(function() {
         $.each(ordersData, function(key, value){
           comboBoxOrderStatus = '<div class="input-field col s12">';
           comboBoxOrderStatus += "<select id=\"orderStatus_"+value.id_orden+"\" onchange=\"updateOrderStatus("+value.id_orden+")\">";
-          comboBoxOrderStatus += '<option value="" disabled selected>Estado de la Orden</option>';
-          comboBoxOrderStatus += '<option value="1">N</option>';
-          comboBoxOrderStatus += '<option value="2">A</option>';
-          comboBoxOrderStatus += '<option value="3">D</option>';
-          comboBoxOrderStatus += '<option value="3">L</option>';
-          comboBoxOrderStatus += '<option value="3">E</option>';
-          comboBoxOrderStatus += '<option value="3">C</option>';
+          comboBoxOrderStatus += "<option value=\"1\" >"+value.estado+"</option>";
+          var receivedStatus = value.estado.toText();
+          switch(receivedStatus){
+            case 'N':
+              comboBoxOrderStatus += '<option value="2">A</option>';
+              comboBoxOrderStatus += '<option value="3">D</option>';
+              comboBoxOrderStatus += '<option value="4">L</option>';
+              comboBoxOrderStatus += '<option value="5">E</option>';
+              comboBoxOrderStatus += '<option value="6">C</option>';
+              break;
+            case 'D':
+              comboBoxOrderStatus += '<option value="2">A</option>';
+              comboBoxOrderStatus += '<option value="3">N</option>';
+              comboBoxOrderStatus += '<option value="4">L</option>';
+              comboBoxOrderStatus += '<option value="5">E</option>';
+              comboBoxOrderStatus += '<option value="6">C</option>';
+              break;
+            case 'A':
+              comboBoxOrderStatus += '<option value="2">N</option>';
+              comboBoxOrderStatus += '<option value="3">D</option>';
+              comboBoxOrderStatus += '<option value="4">L</option>';
+              comboBoxOrderStatus += '<option value="5">E</option>';
+              comboBoxOrderStatus += '<option value="6">C</option>';
+              break;
+            case 'L':
+              comboBoxOrderStatus += '<option value="2">A</option>';
+              comboBoxOrderStatus += '<option value="3">D</option>';
+              comboBoxOrderStatus += '<option value="4">N</option>';
+              comboBoxOrderStatus += '<option value="5">E</option>';
+              comboBoxOrderStatus += '<option value="6">C</option>';
+              break;
+            case 'E':
+              comboBoxOrderStatus += '<option value="2">A</option>';
+              comboBoxOrderStatus += '<option value="3">D</option>';
+              comboBoxOrderStatus += '<option value="4">L</option>';
+              comboBoxOrderStatus += '<option value="5">N</option>';
+              comboBoxOrderStatus += '<option value="6">C</option>';
+              break;
+            case 'C':
+              comboBoxOrderStatus += '<option value="2">A</option>';
+              comboBoxOrderStatus += '<option value="3">D</option>';
+              comboBoxOrderStatus += '<option value="4">L</option>';
+              comboBoxOrderStatus += '<option value="5">E</option>';
+              comboBoxOrderStatus += '<option value="6">N</option>';
+              break;
+            default:
+              alert("Ha ocurrido un Error");
+          }
           comboBoxOrderStatus += "</select>";
           comboBoxOrderStatus += "<label>Estado de la Orden</label>";
           comboBoxOrderStatus += "</div>";
@@ -210,20 +251,28 @@ $(document).ready(function() {
 
     /*Submit Login Form*/
     $("#loginForm").submit(function(event){
-      var loginFormArray = $("#loginForm").serializeArray();//Serialize all the data in the form
-      var loginJSONData = toJSON(loginFormArray);//Convert form data to JSON formData
+      var loginData = new Object();
+      loginData.id_usuario = $("#restaurant_loginID").val();
+      loginData.contrasena = $("#restaurant_loginPassword").val();
+      var JSONloginData = JSON.stringify(loginData);
       $.ajax({
         type: "POST",
         url: "http://feedmeserver.herokuapp.com/loginRestaurante",
-        data: loginJSONData,
+        data: JSONloginData,
         contentType: "application/json",
         dataType: 'json'
       })
       .done(function(data, textStatus, jqXHR){
         console.log("Ajax completed: " + data);
       })
-      .fail(function(jqXHR, textStatus, errorThrown){
-        console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+      .fail(function(responseDataArray, textStatus, errorThrown){
+        if(responseDataArray.responseText == "existe" && responseDataArray.status == 200){
+          currentUserID = loginData.id_usuario;
+          alert(currentUserID);
+          window.location.href = "mainPage.html";
+        }else{
+          console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+        }
       });
       event.preventDefault();
     });//End Login Form Submit
@@ -254,8 +303,6 @@ $(document).ready(function() {
         console.log("Ajax problem: " + textStatus + ". " + errorThrown);
       });
       event.preventDefault();
-
-
     });
 
     /*Hacer la accion del select al hacer un cambio en el status de la orden*/
