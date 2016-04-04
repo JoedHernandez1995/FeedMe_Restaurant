@@ -7,7 +7,7 @@
   <!--Import AngularJS -->
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
   <!--Import Google Icon Font-->
-  <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!--Import materialize.css-->
   <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
   <!-- Compiled and minified CSS -->
@@ -23,7 +23,6 @@
 </head>
 
 <body background="./images/background.png">
-
   <nav>
     <div class="nav-wrapper red darken-4">
       <img src="./images/Drawing.png" class="nav_bar_logo_left brand-logo" />
@@ -33,39 +32,24 @@
         <!-- Dropdown Trigger -->
         <li><a href="comidasIndex.html">Ver Menu</a></li>
         <li><a href="agregarComida.html">Agregar Comida</a></li>
-        <li><a href="#!">Modificar Comida</a></li>
-        <li><a href="#!">Eliminar Comida</a></li>
-        <li><a href="#!">Cerrar Sesion</a></li>
+        <li><a href="home.html">Cerrar Sesion</a></li>
       </ul>
       <ul class="side-nav" id="mobile-demo">
         <li class="active"><a class="red-text text-darken-4" href="sass.html">Ordenes</a></li>
         <li><a class="red-text text-darken-4" href="comidasIndex.html">Ver Menu</a></li>
         <li><a class="red-text text-darken-4" href="agregarComida.html">Agregar Comida</a></li>
-        <li><a class="red-text text-darken-4" href="#!">Modificar Comida</a></li>
-        <li><a class="red-text text-darken-4" href="#!">Eliminar Comida</a></li>
         <li><a class="red-text text-darken-4" href="#!">Cerrar Sesion</a></li>
       </ul>
     </div>
   </nav>
-
+  <br>
   <div class="row">
     <div class="container">
-      <table id="ordersTable">
-        <thead>
-          <tr>
-            <th data-field="id">Nombre</th>
-            <th data-field="name">Precio</th>
-            <th data-field="price">ID</th>
-            <th data-field="price">Tiempo</th>
-            <th data-field="price">Estado</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+      <div>
+        <ul id="listadoDeOrdenes" class="collapsible popout" data-collapsible="accordion">
+        </ul>
+      </div>
     </div>
   </div>
-
-
 </body>
 </html>
