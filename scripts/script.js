@@ -113,7 +113,6 @@ function updateOrderStatus(orderId){
 
 $(document).ready(function() {
     console.log( "ready!" ); //Test jquery is ready
-    console.log(currentUserID);
     var comboBoxOrderStatus; //ComboBox used to change order status
     var collapsibleItem;
     var cardMenuItem;
