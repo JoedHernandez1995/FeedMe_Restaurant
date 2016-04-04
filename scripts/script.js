@@ -1,5 +1,5 @@
 
-
+var currentUserID = [];
 /*Convert Javascript Array Objects to JSON Format*/
 function toJSON(formArray){
   var obj = {};
@@ -266,7 +266,6 @@ $(document).ready(function() {
       }
     });
 
-
     /*Submit Registration Form*/
     $("#registrationForm").submit(function(event){
       /*Get data from password fields and assign values to variables*/
@@ -284,8 +283,11 @@ $(document).ready(function() {
           event.preventDefault(); //Prevent Form Submission
         }else{
           /*Sumbit Form*/
-          var registrationFormArray = $("#registrationForm").serializeArray(); //Serialize all the data in the form
-          var registrationJSONData = toJSON(registrationFormArray); //Convert form data to JSON formData
+          var registrationFormArray = new Object();
+          registrationFormArray.id_usuario = $("#restaurant_registrationID").val();
+          registrationFormArray.contrasena = $("#restaurant_registrationPassword").val();
+          registrationFormArray.nom_restaurante = $("#restaurant_registrationName").val();
+          var registrationJSONData = JSON.stringify(registrationFormArray); //Convert form data to JSON formData
           $.ajax({
             type: "POST",
             url: "http://feedmeserver.herokuapp.com/restaurante_create",
@@ -298,6 +300,7 @@ $(document).ready(function() {
           })
           .fail(function(jqXHR, textStatus, errorThrown){
             console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+            alert("Bienvenido");
             window.location.href = "mainPage.html";
           });
           event.preventDefault();
@@ -323,7 +326,9 @@ $(document).ready(function() {
       })
       .fail(function(responseDataArray, textStatus, errorThrown){
         if(responseDataArray.responseText == "existe" && responseDataArray.status == 200){
+          //currentUserID.push(loginData.id_usuario);
           //currentUserID = loginData.id_usuario;
+          alert("Bienvenido");
           window.location.href = "mainPage.html";
         }else if(responseDataArray.status == 401){
           alert("Error, Su Usuario o Contrasena no son validos!");
@@ -343,8 +348,7 @@ $(document).ready(function() {
       menuItemFormJSONdata.descript = $("#menuItem_description").val();
       menuItemFormJSONdata.category = $("#menuItem_category").val();
       menuItemFormJSONdata.foto = $("#menuTime_picture").val();
-
-      alert(JSON.stringify(menuItemFormJSONdata));
+      menuItemFormJSONdata.id_restaurante = "prueba01";
       $.ajax({
         type: "POST",
         url: "http://feedmeserver.herokuapp.com/comida_create",
@@ -357,6 +361,8 @@ $(document).ready(function() {
       })
       .fail(function(jqXHR, textStatus, errorThrown){
         console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+        alert("Comida agregada de forma exitosa!");
+        window.location.href = "comidasIndex.html";
       });
       event.preventDefault();
     });
