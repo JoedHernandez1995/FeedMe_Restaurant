@@ -1,4 +1,5 @@
 
+
 /*Convert Javascript Array Objects to JSON Format*/
 function toJSON(formArray){
   var obj = {};
@@ -12,6 +13,10 @@ function toJSON(formArray){
     pObj[cpName] = pair.value;
   });
   return JSON.stringify(obj);
+}
+
+function loadOrders(currentUserID){
+
 }
 
 function deleteFood(foodID){
@@ -121,7 +126,103 @@ $(document).ready(function() {
     var popValue = 0;
     var acumular;
     /*Load Orders from Server*/
+    $.ajax({
+      url: 'http://feedmeserver.herokuapp.com/comidas_cliente',
+      type: 'GET',
+      cache: false,
+      dataType: "json",
+      success: function(ordersData) {
+        $.each(ordersData, function(key, value){
+          comboBoxOrderStatus = '<div class="input-field col s12">';
+          comboBoxOrderStatus += "<select id=\"orderStatus_"+value.id_orden+"\" onchange=\"updateOrderStatus("+value.id_orden+")\">";
+          comboBoxOrderStatus += "<option value=\"1\" >"+value.estado+"</option>";
+          var receivedStatus = value.estado;
+          switch(receivedStatus){
+            case 'N':
+              comboBoxOrderStatus += '<option value="2">A</option>';
+              comboBoxOrderStatus += '<option value="3">D</option>';
+              comboBoxOrderStatus += '<option value="4">L</option>';
+              comboBoxOrderStatus += '<option value="5">E</option>';
+              comboBoxOrderStatus += '<option value="6">C</option>';
+              break;
+            case 'D':
+              comboBoxOrderStatus += '<option value="2">A</option>';
+              comboBoxOrderStatus += '<option value="3">N</option>';
+              comboBoxOrderStatus += '<option value="4">L</option>';
+              comboBoxOrderStatus += '<option value="5">E</option>';
+              comboBoxOrderStatus += '<option value="6">C</option>';
+              break;
+            case 'A':
+              comboBoxOrderStatus += '<option value="2">N</option>';
+              comboBoxOrderStatus += '<option value="3">D</option>';
+              comboBoxOrderStatus += '<option value="4">L</option>';
+              comboBoxOrderStatus += '<option value="5">E</option>';
+              comboBoxOrderStatus += '<option value="6">C</option>';
+              break;
+            case 'L':
+              comboBoxOrderStatus += '<option value="2">A</option>';
+              comboBoxOrderStatus += '<option value="3">D</option>';
+              comboBoxOrderStatus += '<option value="4">N</option>';
+              comboBoxOrderStatus += '<option value="5">E</option>';
+              comboBoxOrderStatus += '<option value="6">C</option>';
+              break;
+            case 'E':
+              comboBoxOrderStatus += '<option value="2">A</option>';
+              comboBoxOrderStatus += '<option value="3">D</option>';
+              comboBoxOrderStatus += '<option value="4">L</option>';
+              comboBoxOrderStatus += '<option value="5">N</option>';
+              comboBoxOrderStatus += '<option value="6">C</option>';
+              break;
+            case 'C':
+              comboBoxOrderStatus += '<option value="2">A</option>';
+              comboBoxOrderStatus += '<option value="3">D</option>';
+              comboBoxOrderStatus += '<option value="4">L</option>';
+              comboBoxOrderStatus += '<option value="5">E</option>';
+              comboBoxOrderStatus += '<option value="6">N</option>';
+              break;
+            default:
+              alert("Ha ocurrido un Error");
+          }
+          comboBoxOrderStatus += "</select>";
+          comboBoxOrderStatus += "<label></label>";
+          comboBoxOrderStatus += "</div>";
 
+          popValue = index.pop();
+          if(popValue == value.id_orden){
+            acumular = "<li>";
+            acumular += "<strong>Nombre del Plato: </strong>"+value.nombre+" <strong>Precio: </strong>"+value.precio+"</li>";
+            $("#orden_"+value.id_orden+"").append(acumular);
+            index.push(value.id_orden);
+          }else {
+            collapsibleItem = "<li>";
+            collapsibleItem += "<div class=\"collapsible-header\"><i class=\"material-icons\">description</i>ID de Orden: "+value.id_orden+"</div>"
+            collapsibleItem += "<div class=\"collapsible-body\">";
+            collapsibleItem += "<div class=\"container\">";
+            collapsibleItem += "</br>"
+            collapsibleItem += "<ul id=\"orden_"+value.id_orden+"\">";
+            collapsibleItem += "<li> Estado De La Orden: "+comboBoxOrderStatus+" </li>";
+            collapsibleItem += "<li> Tiempo: "+value.tiempo+" </li>";
+            collapsibleItem += "<li><strong> Nombre del plato: </strong>"+value.nombre+" <strong> Precio: </strong>"+value.precio+"</li>";
+            collapsibleItem += "</ul>";
+            collapsibleItem += "</br>"
+            collapsibleItem += "</div>";
+            collapsibleItem += "</div>";
+            collapsibleItem += "</li>";
+            $("#listadoDeOrdenes").append(collapsibleItem);
+            //acumular = "";
+            index.push(value.id_orden);
+          }
+          $('select').material_select();
+          $('.collapsible').collapsible({
+            accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+          });
+        });
+      },
+      error: function(e) {
+        //called when there is an error
+        //console.log(e.message);
+      }
+    });
 
     /*Load Foods from Server*/
     $.ajax({
@@ -222,6 +323,7 @@ $(document).ready(function() {
       })
       .fail(function(responseDataArray, textStatus, errorThrown){
         if(responseDataArray.responseText == "existe" && responseDataArray.status == 200){
+          //currentUserID = loginData.id_usuario;
           window.location.href = "mainPage.html";
         }else if(responseDataArray.status == 401){
           alert("Error, Su Usuario o Contrasena no son validos!");
