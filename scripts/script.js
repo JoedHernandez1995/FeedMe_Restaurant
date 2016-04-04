@@ -52,7 +52,7 @@ function updateOrderStatus(orderId){
       case 'D':
         $.ajax({
           type: "POST",
-          url: "http://feedmeserver.herokuapp.com/ordenDenegada",
+          url: "https://feedmeserver.herokuapp.com/ordenDenegada",
           data: JSONOrderID,
           contentType: "application/json",
           dataType: 'json'
