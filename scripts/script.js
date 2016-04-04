@@ -233,7 +233,7 @@ $(document).ready(function() {
       success: function(menuItem) {
         $.each(menuItem, function(key, value){
             //cardMenuItem = "<div class=\"container\">";
-            cardMenuItem = '<div class="card medium col s6 m3 push-m1" style="margin-left:20px">';
+            cardMenuItem = '<div class="card medium col s5 m3 push-m1" style="margin-left:20px">';
             cardMenuItem += '<div class="card-image waves-effect waves-block waves-light">';
             cardMenuItem += "<img class=\"activator\" src=\""+value.foto+"\">";
             cardMenuItem += "</div>";
