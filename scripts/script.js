@@ -67,7 +67,7 @@ function updateOrderStatus(orderId){
     case 'A':
       $.ajax({
         type: "POST",
-        url: "http://feedmeserver.herokuapp.com/ordenAceptada",
+        url: "https://feedmeserver.herokuapp.com/ordenAceptada",
         data: JSONOrderID,
         contentType: "application/json",
         dataType: 'json'
@@ -82,7 +82,7 @@ function updateOrderStatus(orderId){
     case 'L':
       $.ajax({
         type: "POST",
-        url: "http://feedmeserver.herokuapp.com/ordenLista",
+        url: "https://feedmeserver.herokuapp.com/ordenLista",
         data: JSONOrderID,
         contentType: "application/json",
         dataType: 'json'
@@ -97,7 +97,7 @@ function updateOrderStatus(orderId){
     case 'E':
       $.ajax({
         type: "POST",
-        url: "http://feedmeserver.herokuapp.com/ordenEntregada",
+        url: "https://feedmeserver.herokuapp.com/ordenEntregada",
         data: JSONOrderID,
         contentType: "application/json",
         dataType: 'json'
@@ -127,7 +127,7 @@ $(document).ready(function() {
     var acumular;
     /*Load Orders from Server*/
     $.ajax({
-      url: 'http://feedmeserver.herokuapp.com/comidas_cliente',
+      url: 'https://feedmeserver.herokuapp.com/comidas_cliente',
       type: 'GET',
       cache: false,
       dataType: "json",
@@ -226,7 +226,7 @@ $(document).ready(function() {
 
     /*Load Foods from Server*/
     $.ajax({
-      url: 'http://feedmeserver.herokuapp.com/comidas',
+      url: 'https://feedmeserver.herokuapp.com/comidas',
       type: 'GET',
       cache: false,
       dataType: "json",
@@ -288,7 +288,7 @@ $(document).ready(function() {
           var registrationJSONData = toJSON(registrationFormArray); //Convert form data to JSON formData
           $.ajax({
             type: "POST",
-            url: "http://feedmeserver.herokuapp.com/restaurante_create",
+            url: "https://feedmeserver.herokuapp.com/restaurante_create",
             data: registrationJSONData,
             contentType: "application/json",
             dataType: 'json'
@@ -314,7 +314,7 @@ $(document).ready(function() {
       var JSONloginData = JSON.stringify(loginData);
       $.ajax({
         type: "POST",
-        url: "http://feedmeserver.herokuapp.com/loginRestaurante",
+        url: "https://feedmeserver.herokuapp.com/loginRestaurante",
         data: JSONloginData,
         contentType: "application/json",
         dataType: 'json'
@@ -349,7 +349,7 @@ $(document).ready(function() {
 
       $.ajax({
         type: "POST",
-        url: "http://feedmeserver.herokuapp.com/comida_create",
+        url: "https://feedmeserver.herokuapp.com/comida_create",
         data: JSON.stringify(menuItemFormJSONdata),
         contentType: "application/json",
         dataType: 'json'
