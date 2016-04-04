@@ -26,7 +26,7 @@ function deleteFood(foodID){
   alert(JSONFoodID);
   $.ajax({
     type: "POST",
-    url: "http://feedmeserver.herokuapp.com/EliminarComida",
+    url: "https://feedmeserver.herokuapp.com/EliminarComida",
     data: JSONFoodID,
     contentType: "application/json",
     dataType: 'json'
