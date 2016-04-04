@@ -223,7 +223,6 @@ $(document).ready(function() {
       })
       .fail(function(responseDataArray, textStatus, errorThrown){
         if(responseDataArray.responseText == "existe" && responseDataArray.status == 200){
-          currentUserID = loginData.id_usuario;
           window.location.href = "mainPage.html";
         }else if(responseDataArray.status == 401){
           alert("Error, Su Usuario o Contrasena no son validos!");
