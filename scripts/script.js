@@ -15,6 +15,26 @@ function toJSON(formArray){
   return JSON.stringify(obj);
 }
 
+function deleteFood(foodID){
+  var objectData2 = new Object();
+  objectData2.id_comida = foodID.toString();
+  var JSONFoodID = JSON.stringify(objectData2);
+  alert(JSONFoodID);
+  $.ajax({
+    type: "POST",
+    url: "http://feedmeserver.herokuapp.com/EliminarComida",
+    data: JSONFoodID,
+    contentType: "application/json",
+    dataType: 'json'
+  })
+  .done(function(data, textStatus, jqXHR){
+    console.log("Ajax completed: " + data);
+  })
+  .fail(function(jqXHR, textStatus, errorThrown){
+    console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+  });
+}
+
 /*Send AJAX Request to server to update order status*/
 function updateOrderStatus(orderId){
   var orderStatus = $("#orderStatus_"+orderId+" option:selected").text();
@@ -95,8 +115,12 @@ function updateOrderStatus(orderId){
 $(document).ready(function() {
     console.log( "ready!" ); //Test jquery is ready
     var comboBoxOrderStatus; //ComboBox used to change order status
+    var collapsibleItem;
     var cardMenuItem;
     var orderIdCompare = 0;
+    var index = [-1];
+    var popValue = 0;
+    var acumular;
     /*Load Orders from Server*/
     $.ajax({
       url: 'http://feedmeserver.herokuapp.com/comidas_cliente',
@@ -108,7 +132,7 @@ $(document).ready(function() {
           comboBoxOrderStatus = '<div class="input-field col s12">';
           comboBoxOrderStatus += "<select id=\"orderStatus_"+value.id_orden+"\" onchange=\"updateOrderStatus("+value.id_orden+")\">";
           comboBoxOrderStatus += "<option value=\"1\" >"+value.estado+"</option>";
-          var receivedStatus = value.estado.toText();
+          var receivedStatus = value.estado;
           switch(receivedStatus){
             case 'N':
               comboBoxOrderStatus += '<option value="2">A</option>';
@@ -156,17 +180,38 @@ $(document).ready(function() {
               alert("Ha ocurrido un Error");
           }
           comboBoxOrderStatus += "</select>";
-          comboBoxOrderStatus += "<label>Estado de la Orden</label>";
+          comboBoxOrderStatus += "<label></label>";
           comboBoxOrderStatus += "</div>";
-          $("#ordersTable > tbody").append(
-            "<tr><td>"+
-            value.nombre+"</td><td>"+
-            value.precio+"</td><td>"+
-            value.id_orden+"</td><td>"+
-            value.tiempo+"</td><td>"+
-            comboBoxOrderStatus+"</td></tr>"
-          );
+
+          popValue = index.pop();
+          if(popValue == value.id_orden){
+            acumular = "<li>";
+            acumular += "<strong>Nombre del Plato: </strong>"+value.nombre+" <strong>Precio: </strong>"+value.precio+"</li>";
+            $("#orden_"+value.id_orden+"").append(acumular);
+            index.push(value.id_orden);
+          }else {
+            collapsibleItem = "<li>";
+            collapsibleItem += "<div class=\"collapsible-header\"><i class=\"material-icons\">description</i>ID de Orden: "+value.id_orden+"</div>"
+            collapsibleItem += "<div class=\"collapsible-body\">";
+            collapsibleItem += "<div class=\"container\">";
+            collapsibleItem += "</br>"
+            collapsibleItem += "<ul id=\"orden_"+value.id_orden+"\">";
+            collapsibleItem += "<li> Estado De La Orden: "+comboBoxOrderStatus+" </li>";
+            collapsibleItem += "<li> Tiempo: "+value.tiempo+" </li>";
+            collapsibleItem += "<li><strong> Nombre del plato: </strong>"+value.nombre+" <strong> Precio: </strong>"+value.precio+"</li>";
+            collapsibleItem += "</ul>";
+            collapsibleItem += "</br>"
+            collapsibleItem += "</div>";
+            collapsibleItem += "</div>";
+            collapsibleItem += "</li>";
+            $("#listadoDeOrdenes").append(collapsibleItem);
+            //acumular = "";
+            index.push(value.id_orden);
+          }
           $('select').material_select();
+          $('.collapsible').collapsible({
+            accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+          });
         });
       },
       error: function(e) {
@@ -183,26 +228,32 @@ $(document).ready(function() {
       dataType: "json",
       success: function(menuItem) {
         $.each(menuItem, function(key, value){
-          cardMenuItem = '<div class="card small col s6 m3">';
-          cardMenuItem += '<div class="card-image waves-effect waves-block waves-light">';
-          cardMenuItem += "<img class=\"activator\" src=\""+value.foto+"\">";
-          cardMenuItem += "</div>";
-          cardMenuItem += '<div class="card-content">';
-          cardMenuItem += "<span class=\"card-title activator grey-text text-darken-4\">"+value.nombre+"<i class=\"material-icons right\">more_vert</i></span>";
-          cardMenuItem += "<p>Precio: "+value.precio+"</p>";
-          cardMenuItem += "</div>";
-          cardMenuItem += '<div class="card-reveal">';
-          cardMenuItem += "<span class=\"card-title grey-text text-darken-4\">ID Comida: "+value.id_comida+"<i class=\"material-icons right\">close</i></span>"
-          cardMenuItem += "<p>"+value.descripcion+"</p>"
-          cardMenuItem += "<ul>";
-          cardMenuItem += "<li>Categoria: "+value.categoria+" </li>";
-          cardMenuItem += "<li>Veces Ordenada: "+value.veces_ordenada+" </li>";
-          cardMenuItem += "<li>ID Restaurante: "+value.id_restaurante+" </li>";
-          cardMenuItem += "<li>Nombre Restaurante: "+value.nom_restaurante+" </li>";
-          cardMenuItem += "</ul>";
-          cardMenuItem += "</div>";
-          cardMenuItem += "</div>";
-          $("#indexComidas").append(cardMenuItem);
+            //cardMenuItem = "<div class=\"container\">";
+            cardMenuItem = '<div class="card medium col s6 m3 push-m1" style="margin-left:20px">';
+            cardMenuItem += '<div class="card-image waves-effect waves-block waves-light">';
+            cardMenuItem += "<img class=\"activator\" src=\""+value.foto+"\">";
+            cardMenuItem += "</div>";
+            cardMenuItem += '<div class="card-content">';
+            cardMenuItem += "<span class=\"card-title activator grey-text text-darken-4\">"+value.nombre+"<i class=\"material-icons right\">more_vert</i></span>";
+            cardMenuItem += "<p>Precio: "+value.precio+"</p>";
+            cardMenuItem += "</div>";
+            cardMenuItem += '<div class="card-reveal">';
+            cardMenuItem += "<span class=\"card-title grey-text text-darken-4\">ID Comida: "+value.id_comida+"<i class=\"material-icons right\">close</i></span>"
+            cardMenuItem += "<p>"+value.descripcion+"</p>"
+            cardMenuItem += "<ul>";
+            cardMenuItem += "<li>Categoria: "+value.categoria+" </li>";
+            cardMenuItem += "<li>Veces Ordenada: "+value.veces_ordenada+" </li>";
+            cardMenuItem += "<li>ID Restaurante: "+value.id_restaurante+" </li>";
+            cardMenuItem += "<li>Nombre Restaurante: "+value.nom_restaurante+" </li>";
+            cardMenuItem += "</ul>";
+            cardMenuItem += "</div>";
+            cardMenuItem += "<div class=\"card-action\">";
+            cardMenuItem += "<a href=\"#\" onClick=\"deleteFood("+value.id_comida+")\">Eliminar</a>";
+            cardMenuItem += "<a href=\"#\">Modificar</a>";
+            cardMenuItem += "</div>";
+            cardMenuItem += "</div>";
+            //cardMenuItem += "</div>";
+            $("#indexComidas").append(cardMenuItem);
         });
       },
       error: function(e) {
