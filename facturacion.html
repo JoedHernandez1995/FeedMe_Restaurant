@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--Import jQuery before materialize.js-->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="js/materialize.min.js"></script>
+  <!--Import AngularJS -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--Import materialize.css-->
+  <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+  <!--Import custom javascript-->
+  <script type="text/javascript" src="scripts/script.js"></script>
+  <!--Import custom styles-->
+  <link type="text/css" rel="stylesheet" href="styles/styles.css"/>
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+
+<body background="./images/background.png">
+
+  <nav>
+    <div class="nav-wrapper red darken-4">
+      <img src="./images/Drawing.png" class="nav_bar_logo_left brand-logo" />
+      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="mainPage.html">Ordenes</a></li>
+        <li><a href="comidasIndex.html">Ver Menu</a></li>
+        <li ><a href="agregarComida.html">Agregar Comida</a></li>
+        <li class="active"><a href="facturacion.html">Facturacion</a></li>
+        <li><a href="factura.html">Ver Factura</a></li>
+        <li><a href="home.html">Cerrar Sesion</a></li>
+      </ul>
+      <ul class="side-nav" id="mobile-demo">
+        <li><a class="red-text text-darken-4" href="mainPage.html">Ordenes</a></li>
+        <li><a class="red-text text-darken-4" href="comidasIndex.html">Ver Menu</a></li>
+        <li><a class="red-text text-darken-4" href="agregarComida.html">Agregar Comida</a></li>
+        <li class="active"><a class="red-text text-darken-4" href="facturacion.html">Facturacion</a></li>
+        <li><a class="red-text text-darken-4" href="factura.html">Ver Factura</a></li>
+        <li><a class="red-text text-darken-4" href="home.html">Cerrar Sesion</a></li>
+      </ul>
+    </div>
+  </nav>
+
+</br>
+</br>
+
+<div class="row">
+<div class="col s12 m6 push-m3">
+  <div class="card-panel white">
+    <h4 class="red-text text-darken-4 center">...</h4>
+
+    <form id="formularioDEI" method="post">
+      <div class="row">
+        <div class="input-field col s12 m9 push-m1">
+          <i class="material-icons prefix">subject</i>
+          <input name="rtn" id="deiItem_rtn" type="text" class="validate">
+          <label for="deiItem_rtn">RTN</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12 m9 push-m1">
+          <i class="material-icons prefix">email</i>
+          <input name="correo" id="deiItem_correo" type="text" class="validate">
+          <label for="deiItem_correo">Correo</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12 m9 push-m1">
+          <i class="material-icons prefix">subject</i>
+          <input name="cai" id="deiItem_cai" type="text" class="validate">
+          <label for="deiItem_cai">CAI</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m9 push-m1">
+          <i class="material-icons prefix">today</i>
+          <input placeholder="Fecha Limite" name="fecha_limite" id="deiItem_fechaLimite" type="date" class="datepicker">
+        </div>
+      </div>
+      <div class="row">
+        <div class="input-field col s12 m9 push-m1">
+          <i class="material-icons prefix">subject</i>
+          <input name="facturas_recibidas" id="deiItem_facturasRecibidas" type="text" class="validate">
+          <label for="deiItem_facturasRecibidas">Facturas Recibidas</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col s12 m12 center">
+          <button class="btn waves-effect waves-light red darken-4" type="submit" id="submitformularioDEI" name="submitformularioDEI">Ingresar
+            <i class="material-icons right">send</i>
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+</body>
+</html>
