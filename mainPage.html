@@ -4,6 +4,7 @@
   <!--Import jQuery before materialize.js-->
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="js/materialize.min.js"></script>
+
   <!--Import AngularJS -->
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
   <!--Import Google Icon Font-->
@@ -26,23 +27,24 @@
   <nav>
     <div class="nav-wrapper red darken-4">
       <img src="./images/Drawing.png" class="nav_bar_logo_left brand-logo" />
+      <h3 class="nav_bar_logo_left brand-logo restaurant_name"></h3>
       <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
       <ul class="right hide-on-med-and-down">
-        <li class="active"><a href="mainPage.html">Ordenes</a></li>
+        <li class="active"><a href="#" onclick="orders()">Ordenes</a></li>
         <!-- Dropdown Trigger -->
-        <li><a href="comidasIndex.html">Ver Menu</a></li>
-        <li><a href="agregarComida.html">Agregar Comida</a></li>
-        <li><a href="facturacion.html">Facturacion</a></li>
-        <li><a href="factura.html">Ver Factura</a></li>
+        <li><a href="#" onclick="toFoods()">Ver Menu</a></li>
+        <li><a href="#" onclick="addFoods()">Agregar Comida</a></li>
+        <li><a href="#" onclick="facturacion()">Facturacion</a></li>
+        <li><a href="#" onclick="factura()">Ver Factura</a></li>
         <li><a href="home.html">Cerrar Sesion</a></li>
       </ul>
       <ul class="side-nav" id="mobile-demo">
-        <li class="active"><a class="red-text text-darken-4" href="sass.html">Ordenes</a></li>
-        <li><a class="red-text text-darken-4" href="comidasIndex.html">Ver Menu</a></li>
-        <li><a class="red-text text-darken-4" href="agregarComida.html">Agregar Comida</a></li>
-        <li><a class="red-text text-darken-4" href="facturacion.html">Facturacion</a></li>
-        <li><a class="red-text text-darken-4" href="factura.html">Ver Factura</a></li>
-        <li><a class="red-text text-darken-4" href="home.html">Cerrar Sesion</a></li>
+        <li class="active"><a class="red-text text-darken-4" href="#" onclick="orders()">Ordenes</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="toFoods()">Ver Menu</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="addFood()">Agregar Comida</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="facturacion()">Facturacion</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="factura()">Ver Factura</a></li>
+        <li><a class="red-text text-darken-4" href="#">Cerrar Sesion</a></li>
       </ul>
     </div>
   </nav>
@@ -55,5 +57,259 @@
       </div>
     </div>
   </div>
+
 </body>
+<script type="text/javascript">
+
+/*Send AJAX Request to server to update order status*/
+function updateOrderStatus(orderId){
+  var orderStatus = $("#orderStatus_"+orderId+" option:selected").text();
+  var objectData = new Object();
+  objectData.id_orden = orderId;
+  var JSONOrderID = JSON.stringify(objectData); //JSON Data to send to Server
+
+  switch(orderStatus){
+    case 'Nueva':
+      break;
+      case 'Denegada':
+        $.ajax({
+          type: "POST",
+          url: "https://feedmeserver.herokuapp.com/ordenDenegada",
+          data: JSONOrderID,
+          contentType: "application/json",
+          dataType: 'json'
+        })
+        .done(function(data, textStatus, jqXHR){
+          console.log("Ajax completed: " + data);
+        })
+        .fail(function(jqXHR, textStatus, errorThrown){
+          console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+        });
+      break;
+    case 'Aceptada':
+      $.ajax({
+        type: "POST",
+        url: "https://feedmeserver.herokuapp.com/ordenAceptada",
+        data: JSONOrderID,
+        contentType: "application/json",
+        dataType: 'json'
+      })
+      .done(function(data, textStatus, jqXHR){
+        console.log("Ajax completed: " + data);
+      })
+      .fail(function(jqXHR, textStatus, errorThrown){
+        console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+      });
+      break;
+    case 'Lista':
+      $.ajax({
+        type: "POST",
+        url: "https://feedmeserver.herokuapp.com/ordenLista",
+        data: JSONOrderID,
+        contentType: "application/json",
+        dataType: 'json'
+      })
+      .done(function(data, textStatus, jqXHR){
+        console.log("Ajax completed: " + data);
+      })
+      .fail(function(jqXHR, textStatus, errorThrown){
+        console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+      });
+      break;
+    case 'Entregada':
+      $.ajax({
+        type: "POST",
+        url: "https://feedmeserver.herokuapp.com/ordenEntregada",
+        data: JSONOrderID,
+        contentType: "application/json",
+        dataType: 'json'
+      })
+      .done(function(data, textStatus, jqXHR){
+        console.log("Ajax completed: " + data);
+      })
+      .fail(function(jqXHR, textStatus, errorThrown){
+        console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+      });
+      break;
+    case 'Cancelada':
+      break;
+    default:
+      alert("Ha ocurrido un Error");
+  }
+}
+
+/*Parse URL to get Current User Data*/
+function qs() {
+    var query = window.location.search.substring(1);
+    var parms = query.split('&');
+    for (var i=0; i < parms.length; i++) {
+        var pos = parms[i].indexOf('=');
+        if (pos > 0) {
+            var key = parms[i].substring(0, pos);
+            var val = parms[i].substring(pos + 1);
+        }
+    }
+    return val;
+}
+
+var currentUserID = qs();
+
+function toFoods(){
+  window.location = "comidasIndex.html?id_usuario="+currentUserID;
+}
+
+function addFoods(){
+  window.location = "agregarComida.html?id_usuario="+currentUserID;
+}
+
+function orders(){
+  window.location = "mainPage.html?id_usuario="+currentUserID;
+}
+
+function factura(){
+  window.location = "factura.html?id_usuario="+currentUserID;
+}
+
+function facturacion(){
+  window.location = "facturacion.html?id_usuario="+currentUserID;
+}
+
+function callReceipt(orderID){
+  window.location = "factura.html?id_usuario="+currentUserID+"&id_orden="+orderID;
+}
+
+$.ajax({
+  url: 'https://feedmeserver.herokuapp.com/restaurantes',
+  type: 'GET',
+  cache: false,
+  dataType: "json",
+  success: function(restaurantData) {
+    $.each(restaurantData, function(key, value){
+      if(value.id_usuario == currentUserID){
+        $(".restaurant_name").append(value.nom_restaurante);
+      }
+    });
+  },
+  error: function(e) {
+    //called when there is an error
+    //console.log(e.message);
+  }
+});
+
+var comboBoxOrderStatus; //ComboBox used to change order status
+var collapsibleItem;
+var orderIdCompare = 0;
+var index = [-1];
+var popValue = 0;
+var acumular = 0;
+/*Load Orders from Server*/
+$.ajax({
+  url: 'https://feedmeserver.herokuapp.com/comidas_cliente',
+  type: 'GET',
+  cache: false,
+  dataType: "json",
+  success: function(ordersData) {
+    $.each(ordersData, function(key, value){
+      if(currentUserID == value.id_restaurante){
+        comboBoxOrderStatus = '<div class="input-field col s12">';
+        comboBoxOrderStatus += "<select id=\"orderStatus_"+value.id_orden+"\" onchange=\"updateOrderStatus("+value.id_orden+")\">";
+        var receivedStatus = value.estado;
+        switch(receivedStatus){
+          case 'N':
+            comboBoxOrderStatus += '<option value="1">Nueva</option>';
+            comboBoxOrderStatus += '<option value="2">Aceptada</option>';
+            comboBoxOrderStatus += '<option value="3">Denegada</option>';
+            comboBoxOrderStatus += '<option value="4">Lista</option>';
+            comboBoxOrderStatus += '<option value="5">Entregada</option>';
+            comboBoxOrderStatus += '<option value="6">Cancelada</option>';
+            break;
+          case 'D':
+            comboBoxOrderStatus += '<option value="1">Denegada</option>';
+            comboBoxOrderStatus += '<option value="2">Aceptada</option>';
+            comboBoxOrderStatus += '<option value="3">Nueva</option>';
+            comboBoxOrderStatus += '<option value="4">Lista</option>';
+            comboBoxOrderStatus += '<option value="5">Entregada</option>';
+            comboBoxOrderStatus += '<option value="6">Cancelada</option>';
+            break;
+          case 'A':
+            comboBoxOrderStatus += '<option value="1">Aceptada</option>';
+            comboBoxOrderStatus += '<option value="2">Nueva</option>';
+            comboBoxOrderStatus += '<option value="3">Denegada</option>';
+            comboBoxOrderStatus += '<option value="4">Lista</option>';
+            comboBoxOrderStatus += '<option value="5">Entregada</option>';
+            comboBoxOrderStatus += '<option value="6">Cancelada</option>';
+            break;
+          case 'L':
+            comboBoxOrderStatus += '<option value="1">Lista</option>';
+            comboBoxOrderStatus += '<option value="2">Aceptada</option>';
+            comboBoxOrderStatus += '<option value="3">Denegada</option>';
+            comboBoxOrderStatus += '<option value="4">Nueva</option>';
+            comboBoxOrderStatus += '<option value="5">Entregada</option>';
+            comboBoxOrderStatus += '<option value="6">Cancelada</option>';
+            break;
+          case 'E':
+            comboBoxOrderStatus += '<option value="1">Entregada</option>';
+            comboBoxOrderStatus += '<option value="2">Aceptada</option>';
+            comboBoxOrderStatus += '<option value="3">Denegada</option>';
+            comboBoxOrderStatus += '<option value="4">Lista</option>';
+            comboBoxOrderStatus += '<option value="5">Nueva</option>';
+            comboBoxOrderStatus += '<option value="6">Cancelada</option>';
+            break;
+          case 'C':
+            comboBoxOrderStatus += '<option value="1">Cancelada</option>';
+            comboBoxOrderStatus += '<option value="2">Aceptada</option>';
+            comboBoxOrderStatus += '<option value="3">Denegada</option>';
+            comboBoxOrderStatus += '<option value="4">Lista</option>';
+            comboBoxOrderStatus += '<option value="5">Entregada</option>';
+            comboBoxOrderStatus += '<option value="6">Nueva</option>';
+            break;
+          default:
+            alert("Ha ocurrido un Error");
+        }
+        comboBoxOrderStatus += "</select>";
+        comboBoxOrderStatus += "<label></label>";
+        comboBoxOrderStatus += "</div>";
+        comboBoxOrderStatus += "<div class=\"row\">";
+        comboBoxOrderStatus += "<a class=\"red darken-4 btn\" onclick=\"callReceipt("+value.id_orden+")\">Facturar Orden</a></div>";
+
+        popValue = index.pop();
+        if(popValue == value.id_orden){
+          acumular = "<li>";
+          acumular += "<strong>Nombre del Plato: </strong>"+value.nombre+" <strong>Precio: </strong>"+value.precio+"</li>";
+          $("#orden_"+value.id_orden+"").append(acumular);
+          index.push(value.id_orden);
+        }else{
+          collapsibleItem = "<li>";
+          collapsibleItem += "<div class=\"collapsible-header\"><i class=\"material-icons\">description</i>ID de Orden: "+value.id_orden+"</div>"
+          collapsibleItem += "<div class=\"collapsible-body\">";
+          collapsibleItem += "<div class=\"container\">";
+          collapsibleItem += "</br>";
+          collapsibleItem += "<ul id=\"orden_"+value.id_orden+"\">";
+          collapsibleItem += "<li> Estado De La Orden: "+comboBoxOrderStatus+" </li>";
+          collapsibleItem += "<li> Tiempo: "+value.tiempo+" </li>";
+          collapsibleItem += "<li><strong> Nombre del plato: </strong>"+value.nombre+" <strong> Precio: </strong>"+value.precio+"</li>";
+          collapsibleItem += "</ul>";
+          collapsibleItem += "</br>";
+          collapsibleItem += "</div>";
+          collapsibleItem += "</div>";
+          collapsibleItem += "</li>";
+          $("#listadoDeOrdenes").append(collapsibleItem);
+          //acumular = "";
+          index.push(value.id_orden);
+        }
+        $('select').material_select();
+        $('.collapsible').collapsible({
+          accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+        });
+      }
+    });
+  },
+  error: function(e) {
+    //called when there is an error
+    //console.log(e.message);
+  }
+});
+
+</script>
+
 </html>

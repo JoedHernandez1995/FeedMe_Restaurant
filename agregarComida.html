@@ -4,6 +4,12 @@
   <!--Import jQuery before materialize.js-->
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="js/materialize.min.js"></script>
+
+  <script src='scripts/jquery.ui.widget.js' type='text/javascript'></script>
+  <script src='scripts/jquery.iframe-transport.js' type='text/javascript'></script>
+  <script src='scripts/jquery.fileupload.js' type='text/javascript'></script>
+  <script src='scripts/jquery.cloudinary.js' type='text/javascript'></script>
+
   <!--Import AngularJS -->
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
   <!--Import Google Icon Font-->
@@ -27,22 +33,24 @@
   <nav>
     <div class="nav-wrapper red darken-4">
       <img src="./images/Drawing.png" class="nav_bar_logo_left brand-logo" />
+      <h3 class="nav_bar_logo_left brand-logo restaurant_name"></h3>
       <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
       <ul class="right hide-on-med-and-down">
-        <li><a href="mainPage.html">Ordenes</a></li>
-        <li><a href="comidasIndex.html">Ver Menu</a></li>
-        <li class="active"><a href="agregarComida.html">Agregar Comida</a></li>
-        <li><a href="facturacion.html">Facturacion</a></li>
-        <li><a href="factura.html">Ver Factura</a></li>
+        <li><a href="#" onclick="orders()">Ordenes</a></li>
+        <!-- Dropdown Trigger -->
+        <li><a href="#" onclick="toFoods()">Ver Menu</a></li>
+        <li class="active"><a href="#" onclick="addFoods()">Agregar Comida</a></li>
+        <li><a href="#" onclick="facturacion()">Facturacion</a></li>
+        <li><a href="#" onclick="factura()">Ver Factura</a></li>
         <li><a href="home.html">Cerrar Sesion</a></li>
       </ul>
       <ul class="side-nav" id="mobile-demo">
-        <li><a class="red-text text-darken-4" href="mainPage.html">Ordenes</a></li>
-        <li><a class="red-text text-darken-4" href="comidasIndex.html">Ver Menu</a></li>
-        <li class="active"><a class="red-text text-darken-4" href="agregarComida.html">Agregar Comida</a></li>
-        <li><a class="red-text text-darken-4" href="facturacion.html">Facturacion</a></li>
-        <li><a class="red-text text-darken-4" href="factura.html">Ver Factura</a></li>
-        <li><a class="red-text text-darken-4" href="home.html">Cerrar Sesion</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="orders()">Ordenes</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="toFoods()">Ver Menu</a></li>
+        <li class="active"><a class="red-text text-darken-4" href="#" onclick="addFood()">Agregar Comida</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="facturacion()">Facturacion</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="factura()">Ver Factura</a></li>
+        <li><a class="red-text text-darken-4" href="#">Cerrar Sesion</a></li>
       </ul>
     </div>
   </nav>
@@ -88,7 +96,7 @@
           <div class="file-field input-field col s12 m9 push-m1">
             <div class="btn red darken-4">
               <span>Foto</span>
-              <input type="file">
+              <input name="file" type="file" id="file_uploader"></input>
             </div>
             <div class="file-path-wrapper">
               <input name="foto" id="menuTime_picture" class="file-path validate" type="text">
@@ -109,4 +117,107 @@
 </div>
 
 </body>
+<script type="text/javascript">
+
+/*Parse URL to get Current User Data*/
+function qs() {
+    var query = window.location.search.substring(1);
+    var parms = query.split('&');
+    for (var i=0; i < parms.length; i++) {
+        var pos = parms[i].indexOf('=');
+        if (pos > 0) {
+            var key = parms[i].substring(0, pos);
+            var val = parms[i].substring(pos + 1);
+        }
+    }
+    return val;
+}
+
+var currentUserID = qs();
+var publicID = "";
+
+
+function toFoods(){
+  window.location = "comidasIndex.html?id_usuario="+currentUserID;
+}
+
+function addFoods(){
+  window.location = "agregarComida.html?id_usuario="+currentUserID;
+}
+
+function orders(){
+  window.location = "mainPage.html?id_usuario="+currentUserID;
+}
+
+function factura(){
+  window.location = "factura.html?id_usuario="+currentUserID;
+}
+
+function facturacion(){
+  window.location = "facturacion.html?id_usuario="+currentUserID;
+}
+
+$.ajax({
+  url: 'https://feedmeserver.herokuapp.com/restaurantes',
+  type: 'GET',
+  cache: false,
+  dataType: "json",
+  success: function(restaurantData) {
+    $.each(restaurantData, function(key, value){
+      if(value.id_usuario == currentUserID){
+        $(".restaurant_name").append(value.nom_restaurante);
+      }
+    });
+  },
+  error: function(e) {
+    //called when there is an error
+    //console.log(e.message);
+  }
+});
+
+$('#file_uploader').unsigned_cloudinary_upload("kasl9cfi",
+  { cloud_name: 'dw5ieofkh', tags: 'browser_uploads' },
+  { multiple: true }
+).bind('cloudinarydone', function(e, data) {
+  publicID = data.result.public_id
+  //$('.thumbnails').append($.cloudinary.image(data.result.public_id,
+    //{ format: 'jpg', width: 150, height: 100,
+      //crop: 'thumb', gravity: 'face', effect: 'saturation:50' } ))}
+}).bind('cloudinaryprogress', function(e, data) {
+  //$('.progress_bar').css('width',
+    //Console.log(Math.round((data.loaded * 100.0) / data.total) + '%'));
+
+});
+
+/*Submit MenuItem Form*/
+$("#foodItemForm").submit(function(event){
+
+  var menuItemFormJSONdata = new Object();
+
+  menuItemFormJSONdata.name = $("#menuItem_name").val();
+  menuItemFormJSONdata.price = $("#menuItem_price").val();
+  menuItemFormJSONdata.descript = $("#menuItem_description").val();
+  menuItemFormJSONdata.category = $("#menuItem_category").val();
+  menuItemFormJSONdata.foto = publicID;
+  menuItemFormJSONdata.id_restaurante = currentUserID;
+
+  alert(JSON.stringify(menuItemFormJSONdata));
+  $.ajax({
+    type: "POST",
+    url: "https://feedmeserver.herokuapp.com/comida_create",
+    data: JSON.stringify(menuItemFormJSONdata),
+    contentType: "application/json",
+    dataType: 'json'
+  })
+  .done(function(data, textStatus, jqXHR){
+    console.log("Ajax completed: " + data);
+  })
+  .fail(function(jqXHR, textStatus, errorThrown){
+    alert("Comida agregada exitosamente");
+    console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+    toFoods();
+  });
+
+});
+</script>
 </html>

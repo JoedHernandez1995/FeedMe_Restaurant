@@ -15,7 +15,7 @@
   <!-- Compiled and minified JavaScript -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
   <!--Import custom javascript-->
-  <script type="text/javascript" src="scripts/script.js"></script>
+  <script type="text/javascript" src="scripts/notify.js"></script>
   <!--Import custom styles-->
   <link type="text/css" rel="stylesheet" href="styles/styles.css"/>
   <!--Let browser know website is optimized for mobile-->
@@ -69,4 +69,35 @@
   </div>
 </div>
 </body>
+<script type="text/javascript">
+    /*Submit Login Form*/
+    $("#loginForm").submit(function(event){
+      var loginData = new Object();
+      loginData.id_usuario = $("#restaurant_loginID").val();
+      loginData.contrasena = $("#restaurant_loginPassword").val();
+      var JSONloginData = JSON.stringify(loginData);
+      $.ajax({
+        type: "POST",
+        url: "https://feedmeserver.herokuapp.com/loginRestaurante",
+        data: JSONloginData,
+        contentType: "application/json",
+        dataType: 'json'
+      })
+      .done(function(data, textStatus, jqXHR){
+        console.log("Ajax completed: " + data);
+      })
+      .fail(function(responseDataArray, textStatus, errorThrown){
+        if(responseDataArray.responseText == "existe" && responseDataArray.status == 200){
+          //currentUserID = loginData.id_usuario;
+          $.notify("Bienvenido");
+          window.location = "mainPage.html?id_usuario="+$("#restaurant_loginID").val();
+        }else if(responseDataArray.status == 401){
+          $.notify("Error, Su Usuario o Contrasena no son validos!");
+          console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+        }
+      });
+      event.preventDefault();
+    });//End Login Form Submit
+
+</script>
 </html>

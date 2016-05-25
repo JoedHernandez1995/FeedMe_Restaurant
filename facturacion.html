@@ -27,22 +27,24 @@
   <nav>
     <div class="nav-wrapper red darken-4">
       <img src="./images/Drawing.png" class="nav_bar_logo_left brand-logo" />
+      <h3 class="nav_bar_logo_left brand-logo restaurant_name"></h3>
       <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
       <ul class="right hide-on-med-and-down">
-        <li><a href="mainPage.html">Ordenes</a></li>
-        <li><a href="comidasIndex.html">Ver Menu</a></li>
-        <li ><a href="agregarComida.html">Agregar Comida</a></li>
-        <li class="active"><a href="facturacion.html">Facturacion</a></li>
-        <li><a href="factura.html">Ver Factura</a></li>
+        <li><a href="#" onclick="orders()">Ordenes</a></li>
+        <!-- Dropdown Trigger -->
+        <li><a href="#" onclick="toFoods()">Ver Menu</a></li>
+        <li><a href="#" onclick="addFoods()">Agregar Comida</a></li>
+        <li class="active"><a href="#" onclick="facturacion()">Facturacion</a></li>
+        <li><a href="#" onclick="factura()">Ver Factura</a></li>
         <li><a href="home.html">Cerrar Sesion</a></li>
       </ul>
       <ul class="side-nav" id="mobile-demo">
-        <li><a class="red-text text-darken-4" href="mainPage.html">Ordenes</a></li>
-        <li><a class="red-text text-darken-4" href="comidasIndex.html">Ver Menu</a></li>
-        <li><a class="red-text text-darken-4" href="agregarComida.html">Agregar Comida</a></li>
-        <li class="active"><a class="red-text text-darken-4" href="facturacion.html">Facturacion</a></li>
-        <li><a class="red-text text-darken-4" href="factura.html">Ver Factura</a></li>
-        <li><a class="red-text text-darken-4" href="home.html">Cerrar Sesion</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="orders()">Ordenes</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="toFoods()">Ver Menu</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="addFood()">Agregar Comida</a></li>
+        <li class="active"><a class="red-text text-darken-4" href="#" onclick="facturacion()">Facturacion</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="factura()">Ver Factura</a></li>
+        <li><a class="red-text text-darken-4" href="#">Cerrar Sesion</a></li>
       </ul>
     </div>
   </nav>
@@ -97,8 +99,65 @@
           </button>
         </div>
       </div>
-
     </form>
-
+  </div>
+</div>
+</div>
 </body>
+<script type="text/javascript">
+/*Parse URL to get Current User Data*/
+function qs() {
+    var query = window.location.search.substring(1);
+    var parms = query.split('&');
+    for (var i=0; i < parms.length; i++) {
+        var pos = parms[i].indexOf('=');
+        if (pos > 0) {
+            var key = parms[i].substring(0, pos);
+            var val = parms[i].substring(pos + 1);
+        }
+    }
+    return val;
+}
+
+var currentUserID = qs();
+
+function toFoods(){
+  window.location = "comidasIndex.html?id_usuario="+currentUserID;
+}
+
+function addFoods(){
+  window.location = "agregarComida.html?id_usuario="+currentUserID;
+}
+
+function orders(){
+  window.location = "mainPage.html?id_usuario="+currentUserID;
+}
+
+function factura(){
+  window.location = "factura.html?id_usuario="+currentUserID;
+}
+
+function facturacion(){
+  window.location = "facturacion.html?id_usuario="+currentUserID;
+}
+
+$.ajax({
+  url: 'https://feedmeserver.herokuapp.com/restaurantes',
+  type: 'GET',
+  cache: false,
+  dataType: "json",
+  success: function(restaurantData) {
+    $.each(restaurantData, function(key, value){
+      if(value.id_usuario == currentUserID){
+        $(".restaurant_name").append(value.nom_restaurante);
+      }
+    });
+  },
+  error: function(e) {
+    //called when there is an error
+    //console.log(e.message);
+  }
+});
+
+</script>
 </html>
