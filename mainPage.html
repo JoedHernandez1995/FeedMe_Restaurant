@@ -36,6 +36,8 @@
         <li><a href="#" onclick="addFoods()">Agregar Comida</a></li>
         <li><a href="#" onclick="facturacion()">Facturacion</a></li>
         <li><a href="#" onclick="factura()">Ver Factura</a></li>
+        <li><a href="#" onclick="sugerencias()">Ver Sugerencias</a></li>
+        <li><a href="#" onclick="quejas()">Libro de Quejas</a></li>
         <li><a href="home.html">Cerrar Sesion</a></li>
       </ul>
       <ul class="side-nav" id="mobile-demo">
@@ -44,6 +46,8 @@
         <li><a class="red-text text-darken-4" href="#" onclick="addFood()">Agregar Comida</a></li>
         <li><a class="red-text text-darken-4" href="#" onclick="facturacion()">Facturacion</a></li>
         <li><a class="red-text text-darken-4" href="#" onclick="factura()">Ver Factura</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="sugerencias()">Ver Sugerencias</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="quejas()">Libro de Quejas</a></li>
         <li><a class="red-text text-darken-4" href="#">Cerrar Sesion</a></li>
       </ul>
     </div>
@@ -133,6 +137,8 @@ function updateOrderStatus(orderId){
       break;
     case 'Cancelada':
       break;
+    case 'Rechazada':
+      break;
     default:
       alert("Ha ocurrido un Error");
   }
@@ -174,7 +180,30 @@ function facturacion(){
   window.location = "facturacion.html?id_usuario="+currentUserID;
 }
 
+function quejas(){
+  window.location = "quejas.html?id_usuario="+currentUserID;
+}
+
+function sugerencias(){
+  window.location = "sugerencias.html?id_usuario="+currentUserID;
+}
+
 function callReceipt(orderID){
+  var idRestaurante = new Object();
+  idRestaurante.restauranteid = currentUserID;
+  $.ajax({
+    type: "POST",
+    url: "https://feedmeserver.herokuapp.com/incrementarNumeroDeFactura",
+    data: JSON.stringify(idRestaurante),
+    contentType: "application/json",
+    dataType: 'json'
+  })
+  .done(function(data, textStatus, jqXHR){
+    console.log("Ajax completed: " + data);
+  })
+  .fail(function(jqXHR, textStatus, errorThrown){
+    console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+  });
   window.location = "factura.html?id_usuario="+currentUserID+"&id_orden="+orderID;
 }
 
@@ -222,6 +251,7 @@ $.ajax({
             comboBoxOrderStatus += '<option value="4">Lista</option>';
             comboBoxOrderStatus += '<option value="5">Entregada</option>';
             comboBoxOrderStatus += '<option value="6">Cancelada</option>';
+            comboBoxOrderStatus += '<option value="1">Rechazada</option>';
             break;
           case 'D':
             comboBoxOrderStatus += '<option value="1">Denegada</option>';
@@ -230,6 +260,7 @@ $.ajax({
             comboBoxOrderStatus += '<option value="4">Lista</option>';
             comboBoxOrderStatus += '<option value="5">Entregada</option>';
             comboBoxOrderStatus += '<option value="6">Cancelada</option>';
+            comboBoxOrderStatus += '<option value="1">Rechazada</option>';
             break;
           case 'A':
             comboBoxOrderStatus += '<option value="1">Aceptada</option>';
@@ -238,6 +269,7 @@ $.ajax({
             comboBoxOrderStatus += '<option value="4">Lista</option>';
             comboBoxOrderStatus += '<option value="5">Entregada</option>';
             comboBoxOrderStatus += '<option value="6">Cancelada</option>';
+            comboBoxOrderStatus += '<option value="1">Rechazada</option>';
             break;
           case 'L':
             comboBoxOrderStatus += '<option value="1">Lista</option>';
@@ -246,6 +278,7 @@ $.ajax({
             comboBoxOrderStatus += '<option value="4">Nueva</option>';
             comboBoxOrderStatus += '<option value="5">Entregada</option>';
             comboBoxOrderStatus += '<option value="6">Cancelada</option>';
+            comboBoxOrderStatus += '<option value="1">Rechazada</option>';
             break;
           case 'E':
             comboBoxOrderStatus += '<option value="1">Entregada</option>';
@@ -254,6 +287,7 @@ $.ajax({
             comboBoxOrderStatus += '<option value="4">Lista</option>';
             comboBoxOrderStatus += '<option value="5">Nueva</option>';
             comboBoxOrderStatus += '<option value="6">Cancelada</option>';
+            comboBoxOrderStatus += '<option value="1">Rechazada</option>';
             break;
           case 'C':
             comboBoxOrderStatus += '<option value="1">Cancelada</option>';
@@ -262,9 +296,21 @@ $.ajax({
             comboBoxOrderStatus += '<option value="4">Lista</option>';
             comboBoxOrderStatus += '<option value="5">Entregada</option>';
             comboBoxOrderStatus += '<option value="6">Nueva</option>';
+            comboBoxOrderStatus += '<option value="1">Rechazada</option>';
             break;
+            case 'R':
+              alert("El PAGO DE LA ORDEN NUMERO: "+value.id_orden+" HA SIDO RECHAZADO")
+              comboBoxOrderStatus += '<option value="1">Rechazada</option>';
+              comboBoxOrderStatus += '<option value="1">Cancelada</option>';
+              comboBoxOrderStatus += '<option value="2">Aceptada</option>';
+              comboBoxOrderStatus += '<option value="3">Denegada</option>';
+              comboBoxOrderStatus += '<option value="4">Lista</option>';
+              comboBoxOrderStatus += '<option value="5">Entregada</option>';
+              comboBoxOrderStatus += '<option value="6">Nueva</option>';
+              break;
           default:
             alert("Ha ocurrido un Error");
+            break;
         }
         comboBoxOrderStatus += "</select>";
         comboBoxOrderStatus += "<label></label>";

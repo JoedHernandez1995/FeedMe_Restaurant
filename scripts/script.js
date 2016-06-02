@@ -118,6 +118,7 @@ function updateOrderStatus(orderId){
 
 $(document).ready(function() {
     console.log( "ready!" ); //Test jquery is ready
+    
     /*Submit Registration Form*/
     $("#registrationForm").submit(function(event){
       /*Get data from password fields and assign values to variables*/
@@ -158,34 +159,6 @@ $(document).ready(function() {
     }); //End Registration Form Submit
 
 
-    /* Submit DEI Form*/
-    $("#formularioDEI").submit(function(event){
-      var deiItemFormJSONData = new Object();
-      deiItemFormJSONData.rtn = $("#deiItem_rtn").val();
-      deiItemFormJSONData.correo = $("#deiItem_correo").val();
-      deiItemFormJSONData.cai = $("#deiItem_cai").val();
-      deiItemFormJSONData.fecha_limite = $("#deiItem_fechaLimite").val();
-      deiItemFormJSONData.restauranteid = "usuario7";
-      deiItemFormJSONData.facturas_recibidas = $("#deiItem_facturasRecibidas").val();
-      alert(JSON.stringify(deiItemFormJSONData));
-
-      $.ajax({
-        type: "POST",
-        url: "https://feedmeserver.herokuapp.com/createDei",
-        data: JSON.stringify(deiItemFormJSONData),
-        contentType: "application/json",
-        dataType: 'json'
-      })
-      .done(function(data, textStatus, jqXHR){
-        console.log("Ajax completed: " + data);
-      })
-      .fail(function(jqXHR, textStatus, errorThrown){
-        alert("Agregado Exitosamente");
-        console.log("Ajax problem: " + textStatus + ". " + errorThrown);
-      });
-      event.preventDefault();
-
-    });
 
     /*Hacer la accion del select al hacer un cambio en el status de la orden*/
     /*

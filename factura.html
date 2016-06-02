@@ -36,6 +36,8 @@
         <li><a href="#" onclick="addFoods()">Agregar Comida</a></li>
         <li><a href="#" onclick="facturacion()">Facturacion</a></li>
         <li class="active"><a href="#" onclick="factura()">Ver Factura</a></li>
+        <li><a href="#" onclick="sugerencias()">Ver Sugerencias</a></li>
+        <li><a href="#" onclick="quejas()">Libro de Quejas</a></li>
         <li><a href="home.html">Cerrar Sesion</a></li>
       </ul>
       <ul class="side-nav" id="mobile-demo">
@@ -44,6 +46,8 @@
         <li><a class="red-text text-darken-4" href="#" onclick="addFood()">Agregar Comida</a></li>
         <li><a class="red-text text-darken-4" href="#" onclick="facturacion()">Facturacion</a></li>
         <li class="active"><a class="red-text text-darken-4" href="#" onclick="factura()">Ver Factura</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="sugerencias()">Ver Sugerencias</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="quejas()">Libro de Quejas</a></li>
         <li><a class="red-text text-darken-4" href="#">Cerrar Sesion</a></li>
       </ul>
     </div>
@@ -59,8 +63,7 @@
       <div class="col s8 m8">
         <strong><p id="restaurantName">Nombre de Restaurante: </p></strong>
       </div>
-      <div class="col s4 m4">
-        <p id="cai">C.A.I:</p>
+      <div class="col s4 m4" id="cai">
       </div>
     </div>
     <div class="row">
@@ -88,7 +91,7 @@
     </div>
     <div class="row">
       <div class="col s8 m8">
-        Correo:
+        <p id="correo">Correo: </p>
       </div>
     </div>
     <div class="row">
@@ -120,16 +123,16 @@
         <strong>Son:</strong>
       </br>
       </br>
-        <strong>Fecha Limite Emision:</strong>
+        <strong>Fecha Limite Emision: </strong>
       </br>
       </br>
-        <strong>Original:</strong>
+        <strong>Original: </strong>
       </div>
       <div class="col s6 m6">
         <table class="bordered striped">
           <tbody>
             <tr>
-              <th>Importe Externo / ISV T </th>
+              <th>Importe Externo/ISV T </th>
               <td > L. </td>
             </tr>
             <tr>
@@ -199,6 +202,23 @@ function factura(){
 function facturacion(){
   window.location = "facturacion.html?id_usuario="+currentUserID;
 }
+
+function quejas(){
+  window.location = "quejas.html?id_usuario="+currentUserID;
+}
+
+function sugerencias(){
+  window.location = "sugerencias.html?id_usuario="+currentUserID;
+}
+
+function getTodayDate(){
+  var tdate = new Date();
+  var dd = tdate.getDate();
+  var MM = tdate.getMonth();
+  var yyyy = tdate.getFullYear();
+  var xxx = dd + "-" + (MM+1) + "-" + yyyy;
+  return xxx;
+}
 qs();
 
 var currentUserID = ids[0];
@@ -229,27 +249,25 @@ var data = new Object();
 data.restauranteid = currentUserID;
 
 
-$.ajax({
-  url: 'https://feedmeserver.herokuapp.com/deiRestaurante',
-  type: 'GET',
-  cache: false,
-  dataType: "json",
-  data: JSON.stringify(data),
-  success: function(deiData) {
-    $.each(deiData, function(key, value){
-      alert(value.restauranteid);
-      $("#restaurantName").append(value.restauranteid);
-    });
-  },
-  error: function(e) {
-    //called when there is an error
-    //console.log(e.message);
-  }
-});
+//$.ajax({
+//  url: 'https://feedmeserver.herokuapp.com/deiRestaurante',
+//  type: 'GET',
+//  cache: false,
+//  dataType: "json",
+//  data: JSON.stringify(data),
+//  success: function(deiData) {
+//    $.each(deiData, function(key, value){
+//      alert(value.restauranteid);
+//      $("#restaurantName").append(value.restauranteid);
+//      $("#cai").append(value.cai);
+//    });
+//  },
+//  error: function(e) {
+//    console.log(e.message);
+//  }
+//});
 
 var tablerow="";
-
-var totalPrice = 0;
 
 $.ajax({
   url: 'https://feedmeserver.herokuapp.com/comidas_cliente',
@@ -259,11 +277,10 @@ $.ajax({
   success: function(ordersData) {
     $.each(ordersData, function(key, value){
       if(currentOrderID == value.id_orden){
-        tablerow += "<tr>";
+        tablerow = "<tr>";
         tablerow += "<td>"+value.nombre+"</td>";
         tablerow += "<td>"+value.precio+"</td>";
         tablerow += "</tr>";
-        totalPrice += value.precio;
         $("#orderItems").append(tablerow);
       }
     });
@@ -273,7 +290,28 @@ $.ajax({
     //console.log(e.message);
   }
 });
-$("precio_total").append(totalPrice);
+
+$.ajax({
+  url: 'https://feedmeserver.herokuapp.com/dei',
+  type: 'GET',
+  cache: false,
+  dataType: "json",
+  success: function(ordersData) {
+    $.each(ordersData, function(key, value){
+      if(value.restauranteid == currentUserID){
+        $("#rtn").append(value.rtn);
+        $("#cai").append("<p>C.A.I: "+value.cai+"</p>");
+        $("#correo").append(value.correo);
+        $("#num_factura").append(value.num_factura_actual);
+        $("#fecha_emision").append(getTodayDate());
+      }
+    });
+  },
+  error: function(e) {
+    //called when there is an error
+    //console.log(e.message);
+  }
+});
 
 </script>
 </html>

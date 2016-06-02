@@ -4,6 +4,7 @@
   <!--Import jQuery before materialize.js-->
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="js/materialize.min.js"></script>
+
   <!--Import AngularJS -->
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
   <!--Import Google Icon Font-->
@@ -23,7 +24,6 @@
 </head>
 
 <body background="./images/background.png">
-
   <nav>
     <div class="nav-wrapper red darken-4">
       <img src="./images/Drawing.png" class="nav_bar_logo_left brand-logo" />
@@ -34,79 +34,28 @@
         <!-- Dropdown Trigger -->
         <li><a href="#" onclick="toFoods()">Ver Menu</a></li>
         <li><a href="#" onclick="addFoods()">Agregar Comida</a></li>
-        <li class="active"><a href="#" onclick="facturacion()">Facturacion</a></li>
+        <li><a href="#" onclick="facturacion()">Facturacion</a></li>
         <li><a href="#" onclick="factura()">Ver Factura</a></li>
         <li><a href="#" onclick="sugerencias()">Ver Sugerencias</a></li>
-        <li><a href="#" onclick="quejas()">Libro de Quejas</a></li>
+        <li class="active"><a href="#" onclick="quejas()">Libro de Quejas</a></li>
         <li><a href="home.html">Cerrar Sesion</a></li>
       </ul>
       <ul class="side-nav" id="mobile-demo">
         <li><a class="red-text text-darken-4" href="#" onclick="orders()">Ordenes</a></li>
         <li><a class="red-text text-darken-4" href="#" onclick="toFoods()">Ver Menu</a></li>
         <li><a class="red-text text-darken-4" href="#" onclick="addFood()">Agregar Comida</a></li>
-        <li class="active"><a class="red-text text-darken-4" href="#" onclick="facturacion()">Facturacion</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="facturacion()">Facturacion</a></li>
         <li><a class="red-text text-darken-4" href="#" onclick="factura()">Ver Factura</a></li>
         <li><a class="red-text text-darken-4" href="#" onclick="sugerencias()">Ver Sugerencias</a></li>
-        <li><a class="red-text text-darken-4" href="#" onclick="quejas()">Libro de Quejas</a></li>
+        <li class="active"><a class="red-text text-darken-4" href="#" onclick="quejas()">Libro de Quejas</a></li>
         <li><a class="red-text text-darken-4" href="#">Cerrar Sesion</a></li>
       </ul>
     </div>
   </nav>
-
-</br>
-</br>
-
-<div class="row">
-<div class="col s12 m6 push-m3">
-  <div class="card-panel white">
-    <h4 class="red-text text-darken-4 center">Registro DEI</h4>
-
-    <form id="formularioDEI" method="post">
-      <div class="row">
-        <div class="input-field col s12 m9 push-m1">
-          <i class="material-icons prefix">subject</i>
-          <input name="rtn" id="deiItem_rtn" type="text" class="validate">
-          <label for="deiItem_rtn">RTN</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12 m9 push-m1">
-          <i class="material-icons prefix">email</i>
-          <input name="correo" id="deiItem_correo" type="text" class="validate">
-          <label for="deiItem_correo">Correo</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12 m9 push-m1">
-          <i class="material-icons prefix">subject</i>
-          <input name="cai" id="deiItem_cai" type="text" class="validate">
-          <label for="deiItem_cai">CAI</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col s12 m9 push-m1">
-          <i class="material-icons prefix">today</i>
-          <input placeholder="Fecha Limite" name="fecha_limite" id="deiItem_fechaLimite" type="date" class="datepicker">
-        </div>
-      </div>
-      <div class="row">
-        <div class="input-field col s12 m9 push-m1">
-          <i class="material-icons prefix">subject</i>
-          <input name="facturas_recibidas" id="deiItem_facturasRecibidas" type="text" class="validate">
-          <label for="deiItem_facturasRecibidas">Facturas Recibidas</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col s12 m12 center">
-          <button class="btn waves-effect waves-light red darken-4" type="submit" id="submitformularioDEI" name="submitformularioDEI">Ingresar
-            <i class="material-icons right">send</i>
-          </button>
-        </div>
-      </div>
-    </form>
+  <br>
+  <div id="quejas" class="container">
   </div>
-</div>
-</div>
+
 </body>
 <script type="text/javascript">
 /*Parse URL to get Current User Data*/
@@ -152,16 +101,22 @@ function quejas(){
 function sugerencias(){
   window.location = "sugerencias.html?id_usuario="+currentUserID;
 }
+ var card = "";
 
 $.ajax({
-  url: 'https://feedmeserver.herokuapp.com/restaurantes',
+  url: 'https://feedmeserver.herokuapp.com/quejas',
   type: 'GET',
   cache: false,
   dataType: "json",
-  success: function(restaurantData) {
-    $.each(restaurantData, function(key, value){
-      if(value.id_usuario == currentUserID){
-        $(".restaurant_name").append(value.nom_restaurante);
+  success: function(queja) {
+    $.each(queja, function(key, value){
+      if(currentUserID == value.restaurante){
+        card = "<div class=\"row\">";
+        card += "<div class=\"col s12 m8 push-m2\">";
+        card += "<div class=\"card-panel white\">";
+        card += "<span class=\"red-text text-darken-4\">"+value.queja+"</span></div></div></div>";
+        $("#quejas").append(card);
+        card + "";
       }
     });
   },
@@ -172,34 +127,7 @@ $.ajax({
 });
 
 
-/* Submit DEI Form*/
-$("#formularioDEI").submit(function(event){
-  var deiItemFormJSONData = new Object();
-  deiItemFormJSONData.rtn = $("#deiItem_rtn").val();
-  deiItemFormJSONData.correo = $("#deiItem_correo").val();
-  deiItemFormJSONData.cai = $("#deiItem_cai").val();
-  deiItemFormJSONData.fecha_limite = $("#deiItem_fechaLimite").val();
-  deiItemFormJSONData.restauranteid = currentUserID;
-  deiItemFormJSONData.facturas_recibidas = $("#deiItem_facturasRecibidas").val();
-
-  $.ajax({
-    type: "POST",
-    url: "https://feedmeserver.herokuapp.com/createDei",
-    data: JSON.stringify(deiItemFormJSONData),
-    contentType: "application/json",
-    dataType: 'json'
-  })
-  .done(function(data, textStatus, jqXHR){
-    console.log("Ajax completed: " + data);
-  })
-  .fail(function(jqXHR, textStatus, errorThrown){
-    alert("Agregado Exitosamente");
-    orders();
-    console.log("Ajax problem: " + textStatus + ". " + errorThrown);
-  });
-  event.preventDefault();
-
-});
 
 </script>
+
 </html>

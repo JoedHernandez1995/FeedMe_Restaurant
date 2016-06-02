@@ -42,6 +42,8 @@
         <li class="active"><a href="#" onclick="addFoods()">Agregar Comida</a></li>
         <li><a href="#" onclick="facturacion()">Facturacion</a></li>
         <li><a href="#" onclick="factura()">Ver Factura</a></li>
+        <li><a href="#" onclick="sugerencias()">Ver Sugerencias</a></li>
+        <li><a href="#" onclick="quejas()">Libro de Quejas</a></li>
         <li><a href="home.html">Cerrar Sesion</a></li>
       </ul>
       <ul class="side-nav" id="mobile-demo">
@@ -50,6 +52,8 @@
         <li class="active"><a class="red-text text-darken-4" href="#" onclick="addFood()">Agregar Comida</a></li>
         <li><a class="red-text text-darken-4" href="#" onclick="facturacion()">Facturacion</a></li>
         <li><a class="red-text text-darken-4" href="#" onclick="factura()">Ver Factura</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="sugerencias()">Ver Sugerencias</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="quejas()">Libro de Quejas</a></li>
         <li><a class="red-text text-darken-4" href="#">Cerrar Sesion</a></li>
       </ul>
     </div>
@@ -157,6 +161,14 @@ function facturacion(){
   window.location = "facturacion.html?id_usuario="+currentUserID;
 }
 
+function quejas(){
+  window.location = "quejas.html?id_usuario="+currentUserID;
+}
+
+function sugerencias(){
+  window.location = "sugerencias.html?id_usuario="+currentUserID;
+}
+
 $.ajax({
   url: 'https://feedmeserver.herokuapp.com/restaurantes',
   type: 'GET',
@@ -201,7 +213,6 @@ $("#foodItemForm").submit(function(event){
   menuItemFormJSONdata.foto = publicID;
   menuItemFormJSONdata.id_restaurante = currentUserID;
 
-  alert(JSON.stringify(menuItemFormJSONdata));
   $.ajax({
     type: "POST",
     url: "https://feedmeserver.herokuapp.com/comida_create",
