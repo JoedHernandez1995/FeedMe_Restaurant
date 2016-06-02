@@ -133,15 +133,19 @@
           <tbody>
             <tr>
               <th>Importe Externo/ISV T </th>
-              <td > L. </td>
+              <td id="importe_externo"></td>
             </tr>
             <tr>
               <th>Importe ISV </th>
-              <td> L. </td>
+              <td id="importe_isv"></td>
+            </tr>
+            <tr>
+              <th>Subtotal:</th>
+              <td id="subtotal"></td>
             </tr>
             <tr>
               <th>ISV 15%</th>
-              <td> L. </td>
+              <td id="isv"></td>
             </tr>
             <tr>
               <th>TOTAL A PAGAR</th>
@@ -268,7 +272,10 @@ data.restauranteid = currentUserID;
 //});
 
 var tablerow="";
-
+var precio_numeral;
+var subtotal = 0;
+var precio_isv = 0;
+var precio_total = 0;
 $.ajax({
   url: 'https://feedmeserver.herokuapp.com/comidas_cliente',
   type: 'GET',
@@ -282,8 +289,15 @@ $.ajax({
         tablerow += "<td>"+value.precio+"</td>";
         tablerow += "</tr>";
         $("#orderItems").append(tablerow);
+        precio_numeral = parseFloat(value.precio.substring(1));
+        subtotal += precio_numeral;
       }
     });
+    precio_isv = subtotal * 0.15;
+    precio_total = subtotal + precio_isv;
+    $("#subtotal").append(subtotal);
+    $("#isv").append(precio_isv);
+    $("#precio_total").append(precio_total);
   },
   error: function(e) {
     //called when there is an error
