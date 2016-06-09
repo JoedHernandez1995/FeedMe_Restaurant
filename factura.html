@@ -290,10 +290,10 @@ $.ajax({
         tablerow += "</tr>";
         $("#orderItems").append(tablerow);
         precio_numeral = parseFloat(value.precio.substring(1));
-        subtotal += precio_numeral;
+        subtotal += precio_numeral - (precio_numeral * 0.15);
+        precio_isv += precio_numeral * 0.15;
       }
     });
-    precio_isv = subtotal * 0.15;
     precio_total = subtotal + precio_isv;
     $("#subtotal").append(subtotal);
     $("#isv").append(precio_isv);

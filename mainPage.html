@@ -17,6 +17,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
   <!--Import custom javascript-->
   <script type="text/javascript" src="scripts/script.js"></script>
+  <!--Import custom javascript-->
+  <script type="text/javascript" src="scripts/notify.js"></script>
   <!--Import custom styles-->
   <link type="text/css" rel="stylesheet" href="styles/styles.css"/>
   <!--Let browser know website is optimized for mobile-->
@@ -53,6 +55,17 @@
     </div>
   </nav>
   <br>
+
+  <div class="row">
+    <div class="container">
+      <div class="col s12 m8 push-m2">
+        <div class="card-panel white">
+          <ul id="nuevas_ordenes" class="green-text center"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="row">
     <div class="container">
       <div>
@@ -64,9 +77,9 @@
 
 </body>
 <script type="text/javascript">
-
 /*Send AJAX Request to server to update order status*/
 function updateOrderStatus(orderId){
+
   var orderStatus = $("#orderStatus_"+orderId+" option:selected").text();
   var objectData = new Object();
   objectData.id_orden = orderId;
@@ -231,130 +244,162 @@ var orderIdCompare = 0;
 var index = [-1];
 var popValue = 0;
 var acumular = 0;
-/*Load Orders from Server*/
-$.ajax({
-  url: 'https://feedmeserver.herokuapp.com/comidas_cliente',
-  type: 'GET',
-  cache: false,
-  dataType: "json",
-  success: function(ordersData) {
-    $.each(ordersData, function(key, value){
-      if(currentUserID == value.id_restaurante){
-        comboBoxOrderStatus = '<div class="input-field col s12">';
-        comboBoxOrderStatus += "<select id=\"orderStatus_"+value.id_orden+"\" onchange=\"updateOrderStatus("+value.id_orden+")\">";
-        var receivedStatus = value.estado;
-        switch(receivedStatus){
-          case 'N':
-            comboBoxOrderStatus += '<option value="1">Nueva</option>';
-            comboBoxOrderStatus += '<option value="2">Aceptada</option>';
-            comboBoxOrderStatus += '<option value="3">Denegada</option>';
-            comboBoxOrderStatus += '<option value="4">Lista</option>';
-            comboBoxOrderStatus += '<option value="5">Entregada</option>';
-            comboBoxOrderStatus += '<option value="6">Cancelada</option>';
-            comboBoxOrderStatus += '<option value="1">Rechazada</option>';
-            break;
-          case 'D':
-            comboBoxOrderStatus += '<option value="1">Denegada</option>';
-            comboBoxOrderStatus += '<option value="2">Aceptada</option>';
-            comboBoxOrderStatus += '<option value="3">Nueva</option>';
-            comboBoxOrderStatus += '<option value="4">Lista</option>';
-            comboBoxOrderStatus += '<option value="5">Entregada</option>';
-            comboBoxOrderStatus += '<option value="6">Cancelada</option>';
-            comboBoxOrderStatus += '<option value="1">Rechazada</option>';
-            break;
-          case 'A':
-            comboBoxOrderStatus += '<option value="1">Aceptada</option>';
-            comboBoxOrderStatus += '<option value="2">Nueva</option>';
-            comboBoxOrderStatus += '<option value="3">Denegada</option>';
-            comboBoxOrderStatus += '<option value="4">Lista</option>';
-            comboBoxOrderStatus += '<option value="5">Entregada</option>';
-            comboBoxOrderStatus += '<option value="6">Cancelada</option>';
-            comboBoxOrderStatus += '<option value="1">Rechazada</option>';
-            break;
-          case 'L':
-            comboBoxOrderStatus += '<option value="1">Lista</option>';
-            comboBoxOrderStatus += '<option value="2">Aceptada</option>';
-            comboBoxOrderStatus += '<option value="3">Denegada</option>';
-            comboBoxOrderStatus += '<option value="4">Nueva</option>';
-            comboBoxOrderStatus += '<option value="5">Entregada</option>';
-            comboBoxOrderStatus += '<option value="6">Cancelada</option>';
-            comboBoxOrderStatus += '<option value="1">Rechazada</option>';
-            break;
-          case 'E':
-            comboBoxOrderStatus += '<option value="1">Entregada</option>';
-            comboBoxOrderStatus += '<option value="2">Aceptada</option>';
-            comboBoxOrderStatus += '<option value="3">Denegada</option>';
-            comboBoxOrderStatus += '<option value="4">Lista</option>';
-            comboBoxOrderStatus += '<option value="5">Nueva</option>';
-            comboBoxOrderStatus += '<option value="6">Cancelada</option>';
-            comboBoxOrderStatus += '<option value="1">Rechazada</option>';
-            break;
-          case 'C':
-            comboBoxOrderStatus += '<option value="1">Cancelada</option>';
-            comboBoxOrderStatus += '<option value="2">Aceptada</option>';
-            comboBoxOrderStatus += '<option value="3">Denegada</option>';
-            comboBoxOrderStatus += '<option value="4">Lista</option>';
-            comboBoxOrderStatus += '<option value="5">Entregada</option>';
-            comboBoxOrderStatus += '<option value="6">Nueva</option>';
-            comboBoxOrderStatus += '<option value="1">Rechazada</option>';
-            break;
-            case 'R':
-              alert("El PAGO DE LA ORDEN NUMERO: "+value.id_orden+" HA SIDO RECHAZADO")
-              comboBoxOrderStatus += '<option value="1">Rechazada</option>';
+var counter = 0;
+
+var objectData = new Object();
+var JSONOrderID = null; //JSON Data to send to Server
+
+function auto_load(){
+  /*Load Orders from Server*/
+  $("#listadoDeOrdenes").empty();
+  $("#nuevas_ordenes").empty();
+
+  $.ajax({
+    url: 'https://feedmeserver.herokuapp.com/comidas_cliente',
+    type: 'GET',
+    cache: false,
+    dataType: "json",
+    success: function(ordersData) {
+      $.each(ordersData, function(key, value){
+        if(currentUserID == value.id_restaurante){
+          comboBoxOrderStatus = '<div class="input-field col s12">';
+          comboBoxOrderStatus += "<select id=\"orderStatus_"+value.id_orden+"\" onchange=\"updateOrderStatus("+value.id_orden+")\">";
+          var receivedStatus = value.estado;
+          switch(receivedStatus){
+            case 'N':
+              if(counter == 0){
+                  $("#nuevas_ordenes").append("<li> Se ha agregado la orden numero "+value.id_orden+" al listado de ordenes. </li>");
+              }
+              comboBoxOrderStatus += '<option value="1">Nueva</option>';
+              comboBoxOrderStatus += '<option value="2">Aceptada</option>';
+              comboBoxOrderStatus += '<option value="3">Denegada</option>';
+              comboBoxOrderStatus += '<option value="4">Lista</option>';
+              comboBoxOrderStatus += '<option value="5">Entregada</option>';
+              comboBoxOrderStatus += '<option value="6">Cancelada</option>';
+              comboBoxOrderStatus += '<option value="7">Rechazada</option>';
+              counter += 1;
+              break;
+            case 'D':
+              comboBoxOrderStatus += '<option value="1">Denegada</option>';
+              comboBoxOrderStatus += '<option value="2">Aceptada</option>';
+              comboBoxOrderStatus += '<option value="3">Nueva</option>';
+              comboBoxOrderStatus += '<option value="4">Lista</option>';
+              comboBoxOrderStatus += '<option value="5">Entregada</option>';
+              comboBoxOrderStatus += '<option value="6">Cancelada</option>';
+              comboBoxOrderStatus += '<option value="7">Rechazada</option>';
+              break;
+            case 'A':
+              comboBoxOrderStatus += '<option value="1">Aceptada</option>';
+              comboBoxOrderStatus += '<option value="2">Nueva</option>';
+              comboBoxOrderStatus += '<option value="3">Denegada</option>';
+              comboBoxOrderStatus += '<option value="4">Lista</option>';
+              comboBoxOrderStatus += '<option value="5">Entregada</option>';
+              comboBoxOrderStatus += '<option value="6">Cancelada</option>';
+              comboBoxOrderStatus += '<option value="7">Rechazada</option>';
+              break;
+            case 'L':
+              comboBoxOrderStatus += '<option value="1">Lista</option>';
+              comboBoxOrderStatus += '<option value="2">Aceptada</option>';
+              comboBoxOrderStatus += '<option value="3">Denegada</option>';
+              comboBoxOrderStatus += '<option value="4">Nueva</option>';
+              comboBoxOrderStatus += '<option value="5">Entregada</option>';
+              comboBoxOrderStatus += '<option value="6">Cancelada</option>';
+              comboBoxOrderStatus += '<option value="7">Rechazada</option>';
+              break;
+            case 'E':
+              comboBoxOrderStatus += '<option value="1">Entregada</option>';
+              comboBoxOrderStatus += '<option value="2">Aceptada</option>';
+              comboBoxOrderStatus += '<option value="3">Denegada</option>';
+              comboBoxOrderStatus += '<option value="4">Lista</option>';
+              comboBoxOrderStatus += '<option value="5">Nueva</option>';
+              comboBoxOrderStatus += '<option value="6">Cancelada</option>';
+              comboBoxOrderStatus += '<option value="7">Rechazada</option>';
+              break;
+            case 'C':
               comboBoxOrderStatus += '<option value="1">Cancelada</option>';
               comboBoxOrderStatus += '<option value="2">Aceptada</option>';
               comboBoxOrderStatus += '<option value="3">Denegada</option>';
               comboBoxOrderStatus += '<option value="4">Lista</option>';
               comboBoxOrderStatus += '<option value="5">Entregada</option>';
               comboBoxOrderStatus += '<option value="6">Nueva</option>';
+              comboBoxOrderStatus += '<option value="7">Rechazada</option>';
               break;
-          default:
-            alert("Ha ocurrido un Error");
-            break;
-        }
-        comboBoxOrderStatus += "</select>";
-        comboBoxOrderStatus += "<label></label>";
-        comboBoxOrderStatus += "</div>";
-        comboBoxOrderStatus += "<div class=\"row\">";
-        comboBoxOrderStatus += "<a class=\"red darken-4 btn\" onclick=\"callReceipt("+value.id_orden+")\">Facturar Orden</a></div>";
+              case 'R':
+                alert("El PAGO DE LA ORDEN NUMERO: "+value.id_orden+" HA SIDO RECHAZADO");
+                comboBoxOrderStatus += '<option value="1">Rechazada</option>';
+                comboBoxOrderStatus += '<option value="2">Cancelada</option>';
+                comboBoxOrderStatus += '<option value="3">Aceptada</option>';
+                comboBoxOrderStatus += '<option value="4">Denegada</option>';
+                comboBoxOrderStatus += '<option value="5">Lista</option>';
+                comboBoxOrderStatus += '<option value="6">Entregada</option>';
+                comboBoxOrderStatus += '<option value="7">Nueva</option>';
+                objectData.id_orden = value.id_orden;
+                JSONOrderID = JSON.stringify(objectData);
+                $.ajax({
+                  type: "POST",
+                  url: "https://feedmeserver.herokuapp.com/ordenDenegada",
+                  data: JSONOrderID,
+                  contentType: "application/json",
+                  dataType: 'json'
+                })
+                .done(function(data, textStatus, jqXHR){
+                  console.log("Ajax completed: " + data);
+                })
+                .fail(function(jqXHR, textStatus, errorThrown){
+                  console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+                });
+                break;
+            default:
+              alert("Ha ocurrido un Error");
+              break;
+          }
+          comboBoxOrderStatus += "</select>";
+          comboBoxOrderStatus += "<label></label>";
+          comboBoxOrderStatus += "</div>";
+          comboBoxOrderStatus += "<div class=\"row\">";
+          comboBoxOrderStatus += "<a class=\"red darken-4 btn\" onclick=\"callReceipt("+value.id_orden+")\">Facturar Orden</a></div>";
 
-        popValue = index.pop();
-        if(popValue == value.id_orden){
-          acumular = "<li>";
-          acumular += "<strong>Nombre del Plato: </strong>"+value.nombre+" <strong>Precio: </strong>"+value.precio+"</li>";
-          $("#orden_"+value.id_orden+"").append(acumular);
-          index.push(value.id_orden);
-        }else{
-          collapsibleItem = "<li>";
-          collapsibleItem += "<div class=\"collapsible-header\"><i class=\"material-icons\">description</i>ID de Orden: "+value.id_orden+"</div>"
-          collapsibleItem += "<div class=\"collapsible-body\">";
-          collapsibleItem += "<div class=\"container\">";
-          collapsibleItem += "</br>";
-          collapsibleItem += "<ul id=\"orden_"+value.id_orden+"\">";
-          collapsibleItem += "<li> Estado De La Orden: "+comboBoxOrderStatus+" </li>";
-          collapsibleItem += "<li> Tiempo: "+value.tiempo+" </li>";
-          collapsibleItem += "<li><strong> Nombre del plato: </strong>"+value.nombre+" <strong> Precio: </strong>"+value.precio+"</li>";
-          collapsibleItem += "</ul>";
-          collapsibleItem += "</br>";
-          collapsibleItem += "</div>";
-          collapsibleItem += "</div>";
-          collapsibleItem += "</li>";
-          $("#listadoDeOrdenes").append(collapsibleItem);
-          //acumular = "";
-          index.push(value.id_orden);
+          popValue = index.pop();
+          if(popValue == value.id_orden){
+            acumular = "<li>";
+            acumular += "<strong>Nombre del Plato: </strong>"+value.nombre+" <strong>Precio: </strong>"+value.precio+"</li>";
+            $("#orden_"+value.id_orden+"").append(acumular);
+            index.push(value.id_orden);
+            counter = 0;
+          }else{
+            collapsibleItem = "<li>";
+            collapsibleItem += "<div class=\"collapsible-header\"><i class=\"material-icons\">description</i>ID de Orden: "+value.id_orden+"</div>"
+            collapsibleItem += "<div class=\"collapsible-body\">";
+            collapsibleItem += "<div class=\"container\">";
+            collapsibleItem += "</br>";
+            collapsibleItem += "<ul id=\"orden_"+value.id_orden+"\">";
+            collapsibleItem += "<li> Estado De La Orden: "+comboBoxOrderStatus+" </li>";
+            collapsibleItem += "<li> Tiempo: "+value.tiempo+" </li>";
+            collapsibleItem += "<li><strong> Nombre del plato: </strong>"+value.nombre+" <strong> Precio: </strong>"+value.precio+"</li>";
+            collapsibleItem += "</ul>";
+            collapsibleItem += "</br>";
+            collapsibleItem += "</div>";
+            collapsibleItem += "</div>";
+            collapsibleItem += "</li>";
+            $("#listadoDeOrdenes").append(collapsibleItem);
+            //acumular = "";
+            index.push(value.id_orden);
+          }
+          $('select').material_select();
+          $('.collapsible').collapsible({
+            accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+          });
         }
-        $('select').material_select();
-        $('.collapsible').collapsible({
-          accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
-        });
-      }
-    });
-  },
-  error: function(e) {
-    //called when there is an error
-    //console.log(e.message);
-  }
-});
+      });
+    },
+    error: function(e) {
+      //called when there is an error
+      //console.log(e.message);
+    }
+  });
+}
+auto_load();
+setInterval(auto_load,10000);
 
 </script>
 

@@ -107,6 +107,30 @@ function sugerencias(){
   window.location = "sugerencias.html?id_usuario="+currentUserID;
 }
 
+function comentarios(foodID){
+  window.location = "comentarios.html?id_usuario="+currentUserID+"&id_comida="+foodID;
+}
+
+function deleteFood(foodID){
+  var objectData = new Object();
+  objectData.id_comida = foodID;
+  var JSONFoodID = JSON.stringify(objectData); //JSON Data to send to Server
+  $.ajax({
+    type: "POST",
+    url: "https://feedmeserver.herokuapp.com/eliminarComida",
+    data: JSONFoodID,
+    contentType: "application/json",
+    dataType: 'json'
+  })
+  .done(function(data, textStatus, jqXHR){
+    console.log("Ajax completed: " + data);
+  })
+  .fail(function(jqXHR, textStatus, errorThrown){
+    console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+  });
+}
+
+
 $.ajax({
   url: 'https://feedmeserver.herokuapp.com/restaurantes',
   type: 'GET',
@@ -158,6 +182,7 @@ $.ajax({
         cardMenuItem += "<div class=\"card-action\">";
         cardMenuItem += "<a href=\"#\" onClick=\"deleteFood("+value.id_comida+")\">Eliminar</a>";
         cardMenuItem += "<a href=\"#\">Modificar</a>";
+        cardMenuItem += "<a href=\"#\" onClick=\"comentarios("+value.id_comida+")\">Comentarios</a>";
         cardMenuItem += "</div>";
         cardMenuItem += "</div>";
         //cardMenuItem += "</div>";

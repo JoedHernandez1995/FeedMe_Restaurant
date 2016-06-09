@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!--Import jQuery before materialize.js-->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="js/materialize.min.js"></script>
+
+  <!--Import AngularJS -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!--Import materialize.css-->
+  <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+  <!-- Compiled and minified CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
+  <!-- Compiled and minified JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
+  <!--Import custom javascript-->
+  <script type="text/javascript" src="scripts/script.js"></script>
+  <!--Import custom styles-->
+  <link type="text/css" rel="stylesheet" href="styles/styles.css"/>
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+</head>
+
+<body background="./images/background.png">
+  <nav>
+    <div class="nav-wrapper red darken-4">
+      <img src="./images/Drawing.png" class="nav_bar_logo_left brand-logo" />
+      <h3 class="nav_bar_logo_left brand-logo restaurant_name"></h3>
+      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="#" onclick="orders()">Ordenes</a></li>
+        <!-- Dropdown Trigger -->
+        <li><a href="#" onclick="toFoods()">Ver Menu</a></li>
+        <li><a href="#" onclick="addFoods()">Agregar Comida</a></li>
+        <li><a href="#" onclick="facturacion()">Facturacion</a></li>
+        <li><a href="#" onclick="factura()">Ver Factura</a></li>
+        <li><a href="#" onclick="sugerencias()">Ver Sugerencias</a></li>
+        <li><a href="#" onclick="quejas()">Libro de Quejas</a></li>
+        <li><a href="home.html">Cerrar Sesion</a></li>
+      </ul>
+      <ul class="side-nav" id="mobile-demo">
+        <li><a class="red-text text-darken-4" href="#" onclick="orders()">Ordenes</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="toFoods()">Ver Menu</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="addFood()">Agregar Comida</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="facturacion()">Facturacion</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="factura()">Ver Factura</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="sugerencias()">Ver Sugerencias</a></li>
+        <li><a class="red-text text-darken-4" href="#" onclick="quejas()">Libro de Quejas</a></li>
+        <li><a class="red-text text-darken-4" href="#">Cerrar Sesion</a></li>
+      </ul>
+    </div>
+  </nav>
+  <br>
+  <div id="comentarios" class="container">
+  </div>
+
+</body>
+<script type="text/javascript">
+/*Parse URL to get Current User Data*/
+var ids = [];
+
+function qs() {
+    var query = window.location.search.substring(1);
+    var parms = query.split('&');
+    for (var i=0; i < parms.length; i++) {
+        var pos = parms[i].indexOf('=');
+        if (pos > 0) {
+            var key = parms[i].substring(0, pos);
+            var val = parms[i].substring(pos + 1);
+        }
+        ids.push(val);
+    }
+}
+
+qs();
+
+var currentUserID = ids[0];
+var currentFoodID = ids[1];
+
+function toFoods(){
+  window.location = "comidasIndex.html?id_usuario="+currentUserID;
+}
+
+function addFoods(){
+  window.location = "agregarComida.html?id_usuario="+currentUserID;
+}
+
+function orders(){
+  window.location = "mainPage.html?id_usuario="+currentUserID;
+}
+
+function factura(){
+  window.location = "factura.html?id_usuario="+currentUserID;
+}
+
+function facturacion(){
+  window.location = "facturacion.html?id_usuario="+currentUserID;
+}
+
+function quejas(){
+  window.location = "quejas.html?id_usuario="+currentUserID;
+}
+
+function sugerencias(){
+  window.location = "sugerencias.html?id_usuario="+currentUserID;
+}
+
+var objectData = new Object();
+objectData.id_comida = currentFoodID;
+var JSONFoodID = JSON.stringify(objectData); //JSON Data to send to Server
+
+var card = "";
+
+alert(currentFoodID);
+$.ajax({
+  type: "POST",
+  url: "https://feedmeserver.herokuapp.com/comentariosComida",
+  data: JSONFoodID,
+  contentType: "application/json",
+  dataType: 'json'
+})
+.done(function(data, textStatus, jqXHR){
+  console.log("Ajax completed: " + data);
+  $.each(data, function(key, value){
+    if(currentFoodID == value.id_comida){
+      card = "<div class=\"row\">";
+      card += "<div class=\"col s12 m8 push-m2\">";
+      card += "<div class=\"card-panel white\">";
+      card += "<span class=\"red-text text-darken-4\">"+value.comentario+"</span></div></div></div>";
+      $("#comentarios").append(card);
+    }
+  });
+})
+.fail(function(jqXHR, textStatus, errorThrown){
+  $.each(jqXHR, function(key, value){
+    if(currentFoodID == value.id_comida){
+      card = "<div class=\"row\">";
+      card += "<div class=\"col s12 m8 push-m2\">";
+      card += "<div class=\"card-panel white\">";
+      card += "<span class=\"red-text text-darken-4\">"+value.comentario+"</span></div></div></div>";
+      $("#comentarios").append(card);
+    }
+  });
+  console.log("Ajax problem: " + textStatus + ". " + errorThrown);
+
+});
+
+
+</script>
+
+</html>
